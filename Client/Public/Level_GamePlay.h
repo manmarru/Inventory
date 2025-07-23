@@ -19,14 +19,9 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Camera();	
 	HRESULT Ready_Layer_BackGround();
-	HRESULT Ready_Layer_Effect();
-
-	HRESULT Ready_LandObjects();
 	//HRESULT Ready_Layer_Player(CLandObject::LANDOBJECT_DESC& LandObjectDesc);
-	//HRESULT Ready_Layer_Monster(CLandObject::LANDOBJECT_DESC& LandObjectDesc);
 	
 
 public:

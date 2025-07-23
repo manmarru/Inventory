@@ -81,10 +81,10 @@ PS_OUT PS_MAIN(PS_IN In)
 	
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);/*vector(1.f, In.vTexcoord.y, 0.f, 1.f);*/	
 
-	if (0.1 >= Out.vColor.a)
-		discard;
+	//if (0.1 >= Out.vColor.a)
+	//	discard;
 
-	Out.vColor.gb = Out.vColor.r;
+	//Out.vColor.gb = Out.vColor.r;
 
 	return Out;
 }

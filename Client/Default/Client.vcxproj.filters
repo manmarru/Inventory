@@ -19,9 +19,6 @@
     <Filter Include="01.Levels\Loading">
       <UniqueIdentifier>{5826f108-d734-4b34-a4f6-11a528a309a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\Loading\Loader">
-      <UniqueIdentifier>{91d96f38-b5f2-4ed1-a4ee-a6224c0c3cf0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{bd09e51d-766a-4343-ad6c-b0e50d2d43cd}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,12 @@
     </Filter>
     <Filter Include="02.GameObjects\99.Camera">
       <UniqueIdentifier>{aae6caeb-858d-4707-9718-e4b878cdd9de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Player">
+      <UniqueIdentifier>{2cb4b05f-ba3a-49e7-860e-7255a6439f63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\###Loader###">
+      <UniqueIdentifier>{91d96f38-b5f2-4ed1-a4ee-a6224c0c3cf0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +73,7 @@
       <Filter>01.Levels\Loading</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Loader.h">
-      <Filter>01.Levels\Loading\Loader</Filter>
+      <Filter>01.Levels\###Loader###</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BackGround.h">
       <Filter>02.GameObjects\00.BackGround</Filter>
@@ -79,6 +82,12 @@
       <Filter>02.GameObjects\01.Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\public\FreeCamera.h">
+      <Filter>02.GameObjects\99.Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player.h">
+      <Filter>02.GameObjects\02.Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FixedCamera.h">
       <Filter>02.GameObjects\99.Camera</Filter>
     </ClInclude>
   </ItemGroup>
@@ -102,7 +111,7 @@
       <Filter>01.Levels\Loading</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Loader.cpp">
-      <Filter>01.Levels\Loading\Loader</Filter>
+      <Filter>01.Levels\###Loader###</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BackGround.cpp">
       <Filter>02.GameObjects\00.BackGround</Filter>
@@ -111,6 +120,12 @@
       <Filter>02.GameObjects\01.Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\private\FreeCamera.cpp">
+      <Filter>02.GameObjects\99.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player.cpp">
+      <Filter>02.GameObjects\02.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FixedCamera.cpp">
       <Filter>02.GameObjects\99.Camera</Filter>
     </ClCompile>
   </ItemGroup>
