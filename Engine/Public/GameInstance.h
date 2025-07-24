@@ -72,12 +72,6 @@ public:
 	_vector Get_CamPosition_Vector() const;
 #pragma endregion
 
-#pragma region PICKING
-	//void Transform_MouseRay_ToLocalSpace(const _float4x4& WorldMatrix);	
-	//_bool isPicked_InLocalSpace(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, _float3* pOut);
-
-#pragma endregion
-
 private:
 	class CGraphic_Device*			m_pGraphic_Device = { nullptr };
 	class CInput_Device*			m_pInput_Device = { nullptr };
@@ -87,6 +81,7 @@ private:
 	class CTimer_Manager*			m_pTimer_Manager = { nullptr };
 	class CRenderer*				m_pRenderer = { nullptr };
 	class CPipeLine*				m_pPipeLine = { nullptr };
+	class CUIManager*				m_pUIManager = { nullptr };
 
 public:	
 	void Release_Engine();

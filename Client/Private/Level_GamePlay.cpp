@@ -20,10 +20,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	return S_OK;
 }
 
-void CLevel_GamePlay::Update(_float fTimeDelta)
-{
-	
-}
+void CLevel_GamePlay::Update(_float fTimeDelta) {}
 
 HRESULT CLevel_GamePlay::Render()
 {
@@ -53,6 +50,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera()
 
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround()
 {
+	if (FAILED(m_pGameInstance->Add_CloneObject_ToLayer(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Prototype_GameObject_IngameBG"))))
+		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_CloneObject_ToLayer(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Prototype_GameObject_Terrain"))))
 	//	return E_FAIL;
 
@@ -86,5 +85,4 @@ CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceCon
 void CLevel_GamePlay::Free()
 {
 	__super::Free();
-
 }

@@ -4,6 +4,8 @@
 #include "Object_Manager.h"
 #include "Timer_Manager.h"
 #include "Input_Device.h"
+#include "UIManager.h"
+
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -14,7 +16,7 @@ CGameInstance::CGameInstance()
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const ENGINE_DESC& EngineDesc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext)
 {
-	/* 그래픽 카드를 초기화하낟. */
+	/* 그래픽 카드를 초기화한다. */
 	m_pGraphic_Device = CGraphic_Device::Create(EngineDesc.hWnd, EngineDesc.isWindowsed, EngineDesc.iWinSizeX, EngineDesc.iWinSizeY, ppDevice, ppContext);
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
@@ -31,19 +33,13 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (nullptr == m_pPipeLine)
 		return E_FAIL;
 
-
-	/* 사운드 카드를 초기화하낟. */
-
-	/* 입력장치를 초기화하낟. */
+	/* 입력장치를 초기화한다. */
 	m_pInput_Device = CInput_Device::Create(hInst, EngineDesc.hWnd);
 	if (nullptr == m_pInput_Device)
 		return E_FAIL;
 
-	//m_pPicking = CPicking::Create(*ppDevice, EngineDesc.hWnd, EngineDesc.iWinSizeX, EngineDesc.iWinSizeY);
-	//if (nullptr == m_pPicking)
-	//	return E_FAIL;
 
-	/* 여러가지 매니져를 초기화하낟. */
+	/* 여러가지 매니져를 초기화한다. */
 	m_pLevel_Manager = CLevel_Manager::Create();
 	if (nullptr == m_pLevel_Manager)
 		return E_FAIL;
@@ -56,6 +52,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (nullptr == m_pComponent_Manager)
 		return E_FAIL;
 
+	m_pUIManager = CUIManager::Create();
+	if (nullptr == m_pUIManager)
+		return E_FAIL;	
 
 	return S_OK;
 }
@@ -240,6 +239,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pGraphic_Device);
+	Safe_Release(m_pUIManager);
 
 	CGameInstance::Get_Instance()->Destroy_Instance();	
 }

@@ -28,9 +28,6 @@
     <Filter Include="98.Default">
       <UniqueIdentifier>{4d9edaa0-3df0-42f3-8df9-280f1ae7af4a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97.ShaderFiles">
-      <UniqueIdentifier>{16251933-5a3e-4bdb-8f5e-4d9b7af0d35d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\01.Terrain">
       <UniqueIdentifier>{e3eb8a4e-7019-4deb-af0f-806abe1a5053}</UniqueIdentifier>
     </Filter>
@@ -42,6 +39,15 @@
     </Filter>
     <Filter Include="01.Levels\###Loader###">
       <UniqueIdentifier>{91d96f38-b5f2-4ed1-a4ee-a6224c0c3cf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\97.ShaderFiles">
+      <UniqueIdentifier>{16251933-5a3e-4bdb-8f5e-4d9b7af0d35d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.UI">
+      <UniqueIdentifier>{ea7c87bf-a2a2-4f71-89c1-422810febe44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.UI\Inventory">
+      <UniqueIdentifier>{240d4fe4-70fe-4e02-8819-e20844f11f9c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +96,12 @@
     <ClInclude Include="..\Public\FixedCamera.h">
       <Filter>02.GameObjects\99.Camera</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\IngameBG.h">
+      <Filter>02.GameObjects\00.BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Inventory.h">
+      <Filter>02.GameObjects\03.UI\Inventory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -128,6 +140,12 @@
     <ClCompile Include="..\Private\FixedCamera.cpp">
       <Filter>02.GameObjects\99.Camera</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\IngameBG.cpp">
+      <Filter>02.GameObjects\00.BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Inventory.cpp">
+      <Filter>02.GameObjects\03.UI\Inventory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -149,10 +167,10 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
-      <Filter>97.ShaderFiles</Filter>
+      <Filter>02.GameObjects\97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
-      <Filter>97.ShaderFiles</Filter>
+      <Filter>02.GameObjects\97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

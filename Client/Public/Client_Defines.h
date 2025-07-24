@@ -7,7 +7,23 @@ namespace Client
 	const unsigned int			g_iWinSizeX = { 1280 };
 	const unsigned int			g_iWinSizeY = { 720 };
 
+	struct COOR
+	{
+		int y;
+		int x;
+	};
+
 	enum LEVELID { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_END };
+
+	enum ITEMID
+	{
+		ITEM_NONE,
+		ITEM_POTION,
+		ITEM_GRENADE_WIND,
+		ITEM_GRENADE_ICE,
+		ITEM_GRENADE_FIRE,
+		ITEM_END
+	};
 }
 
 extern HINSTANCE g_hInst;

@@ -4,6 +4,7 @@
 //#include "FreeCamera.h"
 #include "FixedCamera.h"
 #include "BackGround.h"
+#include "IngameBG.h"
 #include "GameInstance.h"
 
 
@@ -79,11 +80,7 @@ HRESULT CLoader::Ready_Resources_For_LogoLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Default.png"), 1))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
-
-
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
-
 
 	lstrcpy(m_szLoadingText, TEXT("객체원형을(를) 로딩중입니다."));
 	/* For. Prototype_GameObject_BackGround */
@@ -101,10 +98,11 @@ HRESULT CLoader::Ready_Resources_For_LogoLevel()
 HRESULT CLoader::Ready_Resources_For_GamePlayLevel()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다."));
-	///* For. Prototype_Component_Texture_Terrain*/
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
-	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Grass_%d.dds"), 2))))
-	//	return E_FAIL;
+	/* For. Prototype_Component_Texture_BackGround */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_IngameBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/IngameBG.png"), 1))))
+		return E_FAIL;
+
 
 	//lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 	///* For. Prototype_Component_VIBuffer_Terrain*/
@@ -130,6 +128,11 @@ HRESULT CLoader::Ready_Resources_For_GamePlayLevel()
 	/* For. Prototype_GameObject_FreeCamera */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FixedCamera"),
 		CFixedCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Prototype_GameObject_IngameBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_IngameBG"),
+		CIngameBG::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

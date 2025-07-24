@@ -85,6 +85,9 @@
     <Filter Include="00.System\01.Device\Input">
       <UniqueIdentifier>{f218174c-0fc4-46cb-a783-c886c8a2b5ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\06.UIManager">
+      <UniqueIdentifier>{f4272bf3-be5b-45ce-9a0a-8898dc593f94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -161,6 +164,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Input_Device.cpp">
       <Filter>00.System\01.Device\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UIManager.cpp">
+      <Filter>01.Utility\06.UIManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Input_Device.h">
       <Filter>00.System\01.Device\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UIManager.h">
+      <Filter>01.Utility\06.UIManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
