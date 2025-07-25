@@ -5,6 +5,9 @@
 #include "FixedCamera.h"
 #include "BackGround.h"
 #include "IngameBG.h"
+
+#include "inventory.h"
+
 #include "GameInstance.h"
 
 
@@ -103,12 +106,11 @@ HRESULT CLoader::Ready_Resources_For_GamePlayLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/IngameBG.png"), 1))))
 		return E_FAIL;
 
+	/* For. Prototype_Component_Texture_Inventory */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TextureTag_Inventory,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/Inventory.png"), 1))))
+		return E_FAIL;
 
-	//lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
-	///* For. Prototype_Component_VIBuffer_Terrain*/
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
-	//	CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp")))))
-	//	return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 	/* For. Prototype_Component_Shader_VtxNorTex*/
@@ -133,6 +135,11 @@ HRESULT CLoader::Ready_Resources_For_GamePlayLevel()
 	/* For. Prototype_GameObject_IngameBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_IngameBG"),
 		CIngameBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Prototype_GameObject_Inventory */
+	if (FAILED(m_pGameInstance->Add_Prototype(GameTag_Inventory,
+		CInventory::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

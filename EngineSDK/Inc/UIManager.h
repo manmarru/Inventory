@@ -11,6 +11,13 @@ private:
 
 public:
     HRESULT Initialize();
+    HRESULT Add_RenderObejct(class CGameObject* pRenderObject);
+    HRESULT Render();
+
+
+private:
+    list<class CGameObject*> m_Uis;
+    list<class CGameObject*> m_RenderUIs;
 
 public:
     static CUIManager* Create();

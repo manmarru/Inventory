@@ -1,4 +1,5 @@
 
+#include "Shader_Engine_Defines.hlsli"
 /* float2 float3 float4 == vector */
 /* float1x3, float3x3, float1x3, float4x4 == matrix */
 
@@ -13,13 +14,6 @@
 
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D		g_Texture;
-
-sampler LinearSampler = sampler_state 
-{
-	Filter = MIN_MAG_MIP_LINEAR;
-	AddressU = wrap;
-	AddressV = WRAP;
-};
 
 struct VS_IN
 {
@@ -39,7 +33,7 @@ struct VS_OUT
 
 /* 1. 정점의 변환과정을 수행한다. */
 /* 2. 정점의 구성 정보를 변형한다. */
-VS_OUT VS_MAIN(/*정점*/VS_IN In)
+VS_OUT VS_MAIN(VS_IN In)
 {
 	VS_OUT		Out = (VS_OUT)0;	
 
@@ -93,12 +87,11 @@ PS_OUT PS_MAIN(PS_IN In)
 
 technique11	DefaultTechnique
 {
-	/* 빛연산 + 림라이트 + ssao + 노멀맵핑 + pbr*/
 	pass UI
 	{
-		//SetBlendState(나만의블렌드스테이츠);
-		//SetDepthStecilState();
-		//SetRasterizerState();
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_AlphaBlend, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		PixelShader = compile ps_5_0 PS_MAIN();

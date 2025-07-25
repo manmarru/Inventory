@@ -33,7 +33,7 @@ protected:
 	_uint				m_iDepth = {};
 
 	_float				m_fViewWidth{}, m_fViewHeight{};
-
+	_bool				m_bActive{ true };
 
 
 public:

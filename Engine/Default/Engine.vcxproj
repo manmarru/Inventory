@@ -78,6 +78,9 @@
     <ClInclude Include="..\public\VIBuffer_Rect.h" />
     <ClInclude Include="..\Public\VIBuffer_Terrain.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Shader_Engine_Defines.hlsli" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D4563335-524D-4360-94C0-EAC189EC5EC3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

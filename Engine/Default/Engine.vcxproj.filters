@@ -88,6 +88,9 @@
     <Filter Include="01.Utility\06.UIManager">
       <UniqueIdentifier>{f4272bf3-be5b-45ce-9a0a-8898dc593f94}</UniqueIdentifier>
     </Filter>
+    <Filter Include="98.ShaderFiles">
+      <UniqueIdentifier>{21da6cab-aa63-43b3-8df9-c400e12a4b7f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -260,5 +263,10 @@
     <ClInclude Include="..\public\UIManager.h">
       <Filter>01.Utility\06.UIManager</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Shader_Engine_Defines.hlsli">
+      <Filter>98.ShaderFiles</Filter>
+    </None>
   </ItemGroup>
 </Project>

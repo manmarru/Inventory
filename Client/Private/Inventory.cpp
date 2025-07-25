@@ -24,8 +24,8 @@ HRESULT CInventory::Initialize(void* pArg)
 	UI_DESC Desc{};
 	Desc.fX = g_iWinSizeX >> 1;
 	Desc.fY = g_iWinSizeY >> 1;
-	Desc.fSizeX = g_iWinSizeX;
-	Desc.fSizeY = g_iWinSizeY;
+	Desc.fSizeX = 420;
+	Desc.fSizeY = 560;
 
 	Desc.fSpeedPerSec = 0.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -50,7 +50,7 @@ void CInventory::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 
-	if(m_bRender == true)
+	if(m_bActive == true)
 		m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, this);
 }
 
@@ -159,7 +159,7 @@ HRESULT CInventory::Ready_Components()
 		return E_FAIL;
 
 	/* FOR.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_IngameBG"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TextureTag_Inventory,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

@@ -2,6 +2,7 @@
 #include "GameObject.h"
 
 #include "BlendObject.h"
+#include "UIManager.h"
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice { pDevice }
@@ -107,6 +108,9 @@ HRESULT CRenderer::Render_UI()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[RG_UI].clear();
+
+
+
 
 	return S_OK;
 }

@@ -4,6 +4,7 @@
 //#include "FreeCamera.h"
 #include "FixedCamera.h"
 #include "GameInstance.h"
+#include "Inventory.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
@@ -15,6 +16,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera()))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_BackGround()))
+		return E_FAIL;
+	if(FAILED(Ready_Layer_UI()))
 		return E_FAIL;
 
 	return S_OK;
@@ -57,6 +60,14 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround()
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject_ToLayer(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Prototype_GameObject_Sky"))))
 	//	return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_UI()
+{
+	if (FAILED(m_pGameInstance->Add_CloneObject_ToLayer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), GameTag_Inventory)))
+		return E_FAIL;
 
 	return S_OK;
 }

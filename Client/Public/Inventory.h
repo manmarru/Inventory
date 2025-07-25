@@ -1,9 +1,12 @@
 #pragma once
 #include "Client_Defines.h"
 #include "UIObject.h"
-#define INVENTORYSIZE 200
-#define INVENTORYSIZEY 20
+#define INVENTORYSIZE 100
+#define INVENTORYSIZEY 10
 #define INVENTORYSIZEX 10
+
+#define GameTag_Inventory TEXT("Prototype_GameObject_Inventory")
+#define TextureTag_Inventory TEXT("Prototype_Component_Texture_Inventory")
 
 
 BEGIN(Engine)
@@ -45,10 +48,6 @@ private:
 	vector<ITEMID> m_Items;
 	vector<char> m_SortLock;
 	unordered_map<ITEMID, int> m_ItemSize;
-
-
-private:
-	bool m_bRender = { false };
 
 private:
 	HRESULT Ready_Components();
