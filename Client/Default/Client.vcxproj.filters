@@ -49,6 +49,15 @@
     <Filter Include="02.GameObjects\03.UI\Inventory">
       <UniqueIdentifier>{240d4fe4-70fe-4e02-8819-e20844f11f9c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03.UI\Inventory\ItemSlot">
+      <UniqueIdentifier>{955bf3b1-1d17-4beb-a7cd-0d928c56da1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.UI\Inventory\ItemIcon">
+      <UniqueIdentifier>{4e883104-0288-43a0-8642-75a631014c58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.UI\LURD_Test">
+      <UniqueIdentifier>{b3755a25-8c4a-47ba-8760-0ca835e73baf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -102,6 +111,10 @@
     <ClInclude Include="..\public\Inventory.h">
       <Filter>02.GameObjects\03.UI\Inventory</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ItemSlot.h">
+      <Filter>02.GameObjects\03.UI\Inventory\ItemSlot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LURD_Test.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -146,6 +159,10 @@
     <ClCompile Include="..\private\Inventory.cpp">
       <Filter>02.GameObjects\03.UI\Inventory</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\ItemSlot.cpp">
+      <Filter>02.GameObjects\03.UI\Inventory\ItemSlot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LURD_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

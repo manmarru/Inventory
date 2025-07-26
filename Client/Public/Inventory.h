@@ -38,6 +38,9 @@ public:
 	class CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 public:
+	void Key_Input();
+
+public:
 	void Swap_Item(COOR Pick, COOR Drop);
 	bool Add_Item(ITEMID Item, int Amount);
 	bool Replace_Item(COOR Pick, int Amount);
@@ -48,6 +51,7 @@ private:
 	vector<ITEMID> m_Items;
 	vector<char> m_SortLock;
 	unordered_map<ITEMID, int> m_ItemSize;
+	bool m_KeyDown_I = { false };
 
 private:
 	HRESULT Ready_Components();

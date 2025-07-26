@@ -1,0 +1,45 @@
+#pragma once
+#include "Client_Defines.h"
+#include "UIObject.h"
+
+#define GameTag_ItemSlot TEXT("Prototype_GameObject_LURD_Test")
+#define TextureTag_ItemSlot TEXT("Prototype_Component_Texture_LURD_Test")
+
+BEGIN(Engine)
+class CShader;
+class CTexture;
+class CVIBuffer_Rect;
+END
+
+BEGIN(Client)
+class CLURD_Test :
+    public CUIObject
+{
+private:
+	CLURD_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CLURD_Test(const CLURD_Test& Prototype);
+	virtual ~CLURD_Test() = default;
+
+public:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Priority_Update(_float fTimeDelta) override;
+	virtual void Update(_float fTimeDelta) override;
+	virtual void Late_Update(_float fTimeDelta) override;
+	virtual HRESULT Render() override;
+
+public:
+	class CShader* m_pShaderCom = { nullptr };
+	class CTexture* m_pTextureCom = { nullptr };
+	class CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
+
+private:
+	HRESULT Ready_Components();
+
+public:
+	static CLURD_Test* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg);
+	virtual void Free() override;
+};
+
+END

@@ -44,7 +44,10 @@ HRESULT CInventory::Initialize(void* pArg)
 
 void CInventory::Priority_Update(_float fTimeDelta) {}
 
-void CInventory::Update(_float fTimeDelta) {}
+void CInventory::Update(_float fTimeDelta) 
+{
+	Key_Input();
+}
 
 void CInventory::Late_Update(_float fTimeDelta)
 {
@@ -74,6 +77,18 @@ HRESULT CInventory::Render()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CInventory::Key_Input()
+{
+	if (m_pGameInstance->Get_DIKeyState(DIK_I) & 0x8000)
+	{
+		if(false == m_KeyDown_I)
+			m_bActive = !m_bActive;
+		m_KeyDown_I = true;
+	}
+	else
+		m_KeyDown_I = false;
 }
 
 void CInventory::Swap_Item(COOR Pick, COOR Drop)

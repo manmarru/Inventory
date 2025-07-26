@@ -6,6 +6,7 @@
 #include "BackGround.h"
 #include "IngameBG.h"
 
+#include "ItemSlot.h"
 #include "inventory.h"
 
 #include "GameInstance.h"

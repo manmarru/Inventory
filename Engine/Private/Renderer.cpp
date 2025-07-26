@@ -114,6 +114,18 @@ HRESULT CRenderer::Render_UI()
 
 	return S_OK;
 }
+#ifdef _DEBUG
+HRESULT CRenderer::Render_Debug()
+{
+	for (auto& pGameObject : m_RenderObjects[RG_TEST])
+	{
+		pGameObject->Render();
+	}
+
+	//그냥 넣어두고 안뺄거임.
+	return S_OK;
+}
+#endif // _DEBUG
 
 CRenderer * CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

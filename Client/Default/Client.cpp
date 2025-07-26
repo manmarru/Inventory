@@ -84,6 +84,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			}
 		}
 
+        if (GetKeyState(VK_ESCAPE) & 0x8000)
+        {
+            break;
+        }
+
 		fTimeAcc += pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
 
 		if (fTimeAcc >= 1.f / 60.0f)
