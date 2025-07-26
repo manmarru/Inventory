@@ -20,11 +20,11 @@ HRESULT CLURD_Test::Initialize_Prototype()
 
 HRESULT CLURD_Test::Initialize(void* pArg)
 {
-	UI_DESC Desc = { };
+	UI_DESC Desc;
 	Desc.fX = g_iWinSizeX >> 1;
 	Desc.fY = g_iWinSizeY >> 1;
-	Desc.fSizeX = 20;
-	Desc.fSizeY = 20;
+	Desc.fSizeX = 30;
+	Desc.fSizeY = 30;
 
 	Desc.fSpeedPerSec = 0.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -35,6 +35,8 @@ HRESULT CLURD_Test::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_pGameInstance->Add_RenderObject(CRenderer::RG_TEST, this);
+
 	return S_OK;
 }
 
@@ -44,6 +46,42 @@ void CLURD_Test::Priority_Update(_float fTimeDelta)
 
 void CLURD_Test::Update(_float fTimeDelta)
 {
+	if (m_pGameInstance->Get_DIKeyState(DIK_1))
+	{
+		m_fSizeX += 1;
+	}
+	else if (m_pGameInstance->Get_DIKeyState(DIK_2))
+	{
+		m_fSizeX -= 1;
+	}
+
+	if (m_pGameInstance->Get_DIKeyState(DIK_3))
+	{
+		m_fSizeY += 1;
+	}
+	else if (m_pGameInstance->Get_DIKeyState(DIK_4))
+	{
+		m_fSizeY -= 1;
+	}
+
+	if (m_pGameInstance->Get_DIKeyState(DIK_J))
+	{
+		m_fX -= 1;
+	}
+	else if (m_pGameInstance->Get_DIKeyState(DIK_L))
+	{
+		m_fX += 1;
+	}
+
+	if (m_pGameInstance->Get_DIKeyState(DIK_I))
+	{
+		m_fY -= 1;
+	}
+	else if (m_pGameInstance->Get_DIKeyState(DIK_K))
+	{
+		m_fY += 1;
+	}
+
 }
 
 void CLURD_Test::Late_Update(_float fTimeDelta)
@@ -81,7 +119,7 @@ HRESULT CLURD_Test::Ready_Components()
 		return E_FAIL;
 
 	/* FOR.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TextureTag_ItemSlot,
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_LURD"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -89,7 +127,6 @@ HRESULT CLURD_Test::Ready_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
-
 
 	return S_OK;
 }
@@ -101,6 +138,12 @@ CLURD_Test* CLURD_Test::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX(TEXT("Failed to Created : CLURD_Test"));
+		Safe_Release(pInstance);
+	}
+
+	if (FAILED(pInstance->Initialize(nullptr)))
+	{
+		MSG_BOX(TEXT("Failed to Initialized : CLURD_TEST"));
 		Safe_Release(pInstance);
 	}
 

@@ -2,6 +2,8 @@
 #include "Client_Defines.h"
 #include "UIObject.h"
 
+#define ItemSlotSize 40
+
 #define GameTag_ItemSlot TEXT("Prototype_GameObject_ItemSlot")
 #define TextureTag_ItemSlot TEXT("Prototype_Component_Texture_ItemSlot")
 
@@ -15,6 +17,11 @@ BEGIN(Client)
 class CItemSlot :
     public CUIObject
 {
+public:
+	typedef struct ITEMSLOT_DESC : public CUIObject::UI_DESC
+	{
+		_float fOffsetX{}, fOffsetY{};
+	};
 private:
     CItemSlot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CItemSlot(const CItemSlot& Prototype);
@@ -32,6 +39,12 @@ public:
 	class CShader* m_pShaderCom = { nullptr };
 	class CTexture* m_pTextureCom = { nullptr };
 	class CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
+	static _float s_fPivotX;
+	static _float s_fPivotY;
+	
+private:
+	_float m_fOffsetX;
+	_float m_fOffsetY;
 
 private:
 	HRESULT Ready_Components();

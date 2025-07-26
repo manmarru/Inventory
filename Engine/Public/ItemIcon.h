@@ -2,23 +2,25 @@
 #include "Client_Defines.h"
 #include "UIObject.h"
 
-#define GameTag_LURD_Test TEXT("Prototype_GameObject_LURD_Test")
-#define TextureTag_LURD_Test TEXT("Prototype_Component_Texture_LURD_Test")
 
 BEGIN(Engine)
 class CShader;
 class CTexture;
-class CVIBuffer_Rect;
+class CVIBUFFER_RECT;
 END
 
 BEGIN(Client)
-class CLURD_Test :
+class CItemIcon :
     public CUIObject
 {
+	typedef struct ITEMICON_DESC : public CUIObject::UI_DESC
+	{
+		_float fOffsetX{}, fOffsetY{};
+	};
 private:
-	CLURD_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CLURD_Test(const CLURD_Test& Prototype);
-	virtual ~CLURD_Test() = default;
+    CItemIcon(ID3D11Device* pDevice, ID3D11DeviceContext pContext);
+    CItemIcon(const CItemIcon& Prototype);
+    ~CItemIcon() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -32,14 +34,19 @@ public:
 	class CShader* m_pShaderCom = { nullptr };
 	class CTexture* m_pTextureCom = { nullptr };
 	class CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
+	static _float s_fPivotX;
+	static _float s_fPivotY;
+
+private:
+	_float m_fOffsetX;
+	_float m_fOffsetY;
 
 private:
 	HRESULT Ready_Components();
 
 public:
-	static CLURD_Test* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CItemIcon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 };
-
 END

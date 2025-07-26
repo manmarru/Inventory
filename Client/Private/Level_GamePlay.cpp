@@ -5,6 +5,7 @@
 #include "FixedCamera.h"
 #include "GameInstance.h"
 #include "Inventory.h"
+#include "LURD_Test.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
@@ -20,10 +21,22 @@ HRESULT CLevel_GamePlay::Initialize()
 	if(FAILED(Ready_Layer_UI()))
 		return E_FAIL;
 
+#ifdef _DEBUG
+	if (FAILED(Ready_Test()))
+		return E_FAIL;
+#endif // _DEBUG
+
+
 	return S_OK;
 }
 
-void CLevel_GamePlay::Update(_float fTimeDelta) {}
+void CLevel_GamePlay::Update(_float fTimeDelta) 
+{
+#ifdef _DEBUG
+	m_pTestObj->Update(fTimeDelta);
+	m_pTestObj->Late_Update(fTimeDelta);
+#endif
+}
 
 HRESULT CLevel_GamePlay::Render()
 {
@@ -72,13 +85,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI()
 	return S_OK;
 }
 
-//HRESULT CLevel_GamePlay::Ready_Layer_Player(CLandObject::LANDOBJECT_DESC& LandObjectDesc)
-//{
-//	if (FAILED(m_pGameInstance->Add_CloneObject_ToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Prototype_GameObject_Player"), &LandObjectDesc)))
-//		return E_FAIL;
-//
-//	return S_OK;
-//}
+#ifdef _DEBUG
+HRESULT CLevel_GamePlay::Ready_Test()
+{
+	m_pTestObj = CLURD_Test::Create(m_pDevice, m_pContext);
+	return S_OK;
+}
+#endif // _DEBUG
 
 CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -95,5 +108,9 @@ CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceCon
 
 void CLevel_GamePlay::Free()
 {
+#ifdef _DEBUG
+	Safe_Release(m_pTestObj);
+#endif // _DEBUG
+
 	__super::Free();
 }

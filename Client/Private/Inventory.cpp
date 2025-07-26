@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Inventory.h"
+#include "ItemSlot.h"
 
 #include "GameInstance.h"
 
@@ -10,7 +11,7 @@ CInventory::CInventory(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CInventory::CInventory(const CInventory& Prototype)
-	:CUIObject{ Prototype }
+	:CUIObject(Prototype)
 {
 }
 
@@ -24,19 +25,22 @@ HRESULT CInventory::Initialize(void* pArg)
 	UI_DESC Desc{};
 	Desc.fX = g_iWinSizeX >> 1;
 	Desc.fY = g_iWinSizeY >> 1;
-	Desc.fSizeX = 420;
-	Desc.fSizeY = 560;
+	Desc.fSizeX = InventorySizeX;
+	Desc.fSizeY = InventorySizeY;
 
 	Desc.fSpeedPerSec = 0.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 
-	m_Items.resize(INVENTORYSIZE, ITEM_NONE);
-	m_SortLock.resize(INVENTORYSIZE, false);
+	m_Items.resize(ItemSlotLength, ITEM_NONE);
+	m_SortLock.resize(ItemSlotLength, false);
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Parts()))
 		return E_FAIL;
 
 	return S_OK;
@@ -53,8 +57,18 @@ void CInventory::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 
-	if(m_bActive == true)
+	if (m_bActive == true)
+	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, this);
+
+		CItemSlot::s_fPivotY = m_fY;
+		CItemSlot::s_fPivotX = m_fX;
+		for (int i = 0; i < ItemSlotLength; ++i)
+		{
+			m_ItemSlots[i]->Late_Update(fTimeDelta);
+			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)m_ItemSlots[i]);
+		}
+	}
 }
 
 HRESULT CInventory::Render()
@@ -89,11 +103,31 @@ void CInventory::Key_Input()
 	}
 	else
 		m_KeyDown_I = false;
+
+	if (m_bActive == false)
+		return;
+
+	if (m_pGameInstance->Get_DIKeyState(DIK_W) & 0x8000)
+	{
+		m_fY -= 1;
+	}
+	else if (m_pGameInstance->Get_DIKeyState(DIK_S) & 0x8000)
+	{
+		m_fY += 1;
+	}
+	else if (m_pGameInstance->Get_DIKeyState(DIK_A) & 0x8000)
+	{
+		m_fX -= 1;
+	}
+	else if (m_pGameInstance->Get_DIKeyState(DIK_D) & 0x8000)
+	{
+		m_fX += 1;
+	}
 }
 
 void CInventory::Swap_Item(COOR Pick, COOR Drop)
 {
-	swap(m_Items[Pick.y * INVENTORYSIZEX + Pick.x], m_Items[Pick.y * INVENTORYSIZEX + Pick.x]);
+	swap(m_Items[Pick.y * ItemSlotLengthX + Pick.x], m_Items[Pick.y * ItemSlotLengthX + Pick.x]);
 }
 
 bool CInventory::Add_Item(ITEMID Item, int Amount)
@@ -104,7 +138,7 @@ bool CInventory::Add_Item(ITEMID Item, int Amount)
 		return true;
 	}
 
-	for (int i = 0; i < INVENTORYSIZE; ++i)
+	for (int i = 0; i < ItemSlotLength; ++i)
 	{
 		if (m_Items[i] == ITEM_NONE)
 		{
@@ -119,7 +153,7 @@ bool CInventory::Add_Item(ITEMID Item, int Amount)
 
 bool CInventory::Replace_Item(COOR Pick, int Amount)
 {
-	ITEMID PickItem = m_Items[Pick.y * INVENTORYSIZEX + Pick.x];
+	ITEMID PickItem = m_Items[Pick.y * ItemSlotLengthX + Pick.x];
 	if (m_ItemSize[PickItem] < Amount)
 	{
 		return false;
@@ -128,7 +162,7 @@ bool CInventory::Replace_Item(COOR Pick, int Amount)
 	m_ItemSize[PickItem] -= Amount;
 	if (m_ItemSize[PickItem] == 0)
 	{
-		m_Items[Pick.y * INVENTORYSIZEX + Pick.x] == ITEM_NONE;
+		m_Items[Pick.y * ItemSlotLengthX + Pick.x] == ITEM_NONE;
 	}
 	
 
@@ -139,7 +173,7 @@ void CInventory::Sort_Items()
 {
 	vector<ITEMID> Unlocked;
 
-	for (int i = 0; i < INVENTORYSIZE; ++i)
+	for (int i = 0; i < ItemSlotLength; ++i)
 	{
 		if (ITEM_NONE == m_Items[i])
 			continue;
@@ -155,7 +189,7 @@ void CInventory::Sort_Items()
 	sort(Unlocked.begin(), Unlocked.end());
 
 	int Count = 0;
-	for (int i = 0; i < INVENTORYSIZE; ++i)
+	for (int i = 0; i < ItemSlotLength; ++i)
 	{
 		if (true == m_SortLock[i])
 			continue;
@@ -183,6 +217,25 @@ HRESULT CInventory::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
+
+	return S_OK;
+}
+
+HRESULT CInventory::Ready_Parts()
+{
+	CItemSlot::ITEMSLOT_DESC Desc;
+	m_ItemSlots.resize(ItemSlotLength, nullptr);
+	for (int y = 0; y < ItemSlotLengthY; ++y)
+	{
+		for (int x = 0; x < ItemSlotLengthX; ++x)
+		{
+			Desc.fOffsetY = ItemSlotSize * y - 165;
+			Desc.fOffsetX = ItemSlotSize * x - 180;
+			int Index = y * ItemSlotLengthX + x;
+			if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_ItemSlots[Index], GameTag_ItemSlot, &Desc)))
+				return E_FAIL;
+		}
+	}
 
 	return S_OK;
 }
@@ -216,6 +269,12 @@ CGameObject* CInventory::Clone(void* pArg)
 void CInventory::Free()
 {
 	__super::Free();
+
+	for(CItemSlot* pItemSlot : m_ItemSlots)
+	{
+		Safe_Release(pItemSlot);
+	}
+
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);

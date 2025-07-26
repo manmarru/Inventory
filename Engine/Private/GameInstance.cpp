@@ -147,10 +147,14 @@ HRESULT CGameInstance::Add_Prototype(const _wstring & strPrototypeTag, CGameObje
 	return m_pObject_Manager->Add_Prototype(strPrototypeTag, pPrototype);
 }
 
-
 HRESULT CGameInstance::Add_CloneObject_ToLayer(_uint iLevelIndex, const _wstring & strLayerTag, const _wstring & strPrototypeTag, void * pArg)
 {
 	return m_pObject_Manager->Add_CloneObject_ToLayer(iLevelIndex, strLayerTag, strPrototypeTag, pArg);
+}
+
+HRESULT CGameInstance::Clone_Prototype(CGameObject** pClone, const _wstring& strPrototypeTag, void* pArg)
+{
+	return m_pObject_Manager->Clone_Prototype(pClone, strPrototypeTag, pArg);
 }
 
 CComponent * CGameInstance::Find_Component(_uint iLevelIndex, const _wstring & strLayerTag, const _wstring & strComponentTag, _uint iIndex)

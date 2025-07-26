@@ -66,6 +66,19 @@ HRESULT CObject_Manager::Add_CloneObject_ToLayer(_uint iLevelIndex, const _wstri
 	return S_OK;
 }
 
+HRESULT CObject_Manager::Clone_Prototype(CGameObject** pClone, const _wstring& strPrototypeTag, void* pArg)
+{
+	CGameObject* pPrototype = Find_Prototype(strPrototypeTag);
+	if (nullptr == pPrototype)
+		return E_FAIL;
+
+	*pClone = pPrototype->Clone(pArg);
+	if (nullptr == pClone)
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CObject_Manager::Priority_Update(_float fTimeDelta)
 {
 	for (size_t i = 0; i < m_iNumLevels; i++)
@@ -73,8 +86,8 @@ HRESULT CObject_Manager::Priority_Update(_float fTimeDelta)
 		/* LEVEL_STATIC용 레이어들과 현재 할당된 레벨용 레이어들만 유효하게 담겨있는 상황이 될꺼다. */
 		for (auto& Pair : m_pLayers[i])
 		{
-			Pair.second->Priority_Update(fTimeDelta);	
-		}	
+			Pair.second->Priority_Update(fTimeDelta);
+		}
 	}
 	return S_OK;
 }

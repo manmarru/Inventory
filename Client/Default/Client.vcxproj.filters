@@ -114,7 +114,9 @@
     <ClInclude Include="..\public\ItemSlot.h">
       <Filter>02.GameObjects\03.UI\Inventory\ItemSlot</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\LURD_Test.h" />
+    <ClInclude Include="..\public\LURD_Test.h">
+      <Filter>02.GameObjects\03.UI\LURD_Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -162,7 +164,9 @@
     <ClCompile Include="..\private\ItemSlot.cpp">
       <Filter>02.GameObjects\03.UI\Inventory\ItemSlot</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\LURD_Test.cpp" />
+    <ClCompile Include="..\private\LURD_Test.cpp">
+      <Filter>02.GameObjects\03.UI\LURD_Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

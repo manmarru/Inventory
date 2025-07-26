@@ -3,6 +3,9 @@
 
 #include "GameInstance.h"
 
+_float CItemSlot::s_fPivotX = 0;
+_float CItemSlot::s_fPivotY = 0;
+
 CItemSlot::CItemSlot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUIObject{ pDevice, pContext }
 {
@@ -20,16 +23,19 @@ HRESULT CItemSlot::Initialize_Prototype()
 
 HRESULT CItemSlot::Initialize(void* pArg)
 {
-	UI_DESC Desc = { };
-	Desc.fX = g_iWinSizeX >> 1;
-	Desc.fY = g_iWinSizeY >> 1;
-	Desc.fSizeX = 30;
-	Desc.fSizeY = 30;
+	ITEMSLOT_DESC* Desc = static_cast<ITEMSLOT_DESC*>(pArg);
+	Desc->fX = g_iWinSizeX >> 1;
+	Desc->fY = g_iWinSizeY >> 1;
+	Desc->fSizeX = ItemSlotSize;
+	Desc->fSizeY = ItemSlotSize;
 
-	Desc.fSpeedPerSec = 0.f;
-	Desc.fRotationPerSec = XMConvertToRadians(90.f);
+	Desc->fSpeedPerSec = 0.f;
+	Desc->fRotationPerSec = XMConvertToRadians(90.f);
+	
+	m_fOffsetX = Desc->fOffsetX;
+	m_fOffsetY = Desc->fOffsetY;
 
-	if (FAILED(__super::Initialize(&Desc)))
+	if (FAILED(__super::Initialize(Desc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
@@ -48,11 +54,31 @@ void CItemSlot::Update(_float fTimeDelta)
 
 void CItemSlot::Late_Update(_float fTimeDelta)
 {
+	m_fX = s_fPivotX + m_fOffsetX;
+	m_fY = s_fPivotY + m_fOffsetY;
+	
 	__super::Late_Update(fTimeDelta);
 }
 
 HRESULT CItemSlot::Render()
 {
+	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pTextureCom->Bind_ShadeResource(m_pShaderCom, "g_Texture", 1)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Begin(0)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
+		return E_FAIL;
+	if (FAILED(m_pVIBufferCom->Render()))
+		return E_FAIL;
+
 	return S_OK;
 }
 

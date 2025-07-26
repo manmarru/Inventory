@@ -1,9 +1,12 @@
 #pragma once
 #include "Client_Defines.h"
 #include "UIObject.h"
-#define INVENTORYSIZE 100
-#define INVENTORYSIZEY 10
-#define INVENTORYSIZEX 10
+#define ItemSlotLength 100
+#define ItemSlotLengthY 10
+#define ItemSlotLengthX 10
+
+#define InventorySizeX 410
+#define InventorySizeY 500
 
 #define GameTag_Inventory TEXT("Prototype_GameObject_Inventory")
 #define TextureTag_Inventory TEXT("Prototype_Component_Texture_Inventory")
@@ -54,7 +57,11 @@ private:
 	bool m_KeyDown_I = { false };
 
 private:
+	vector<class CItemSlot*> m_ItemSlots;
+
+private:
 	HRESULT Ready_Components();
+	HRESULT Ready_Parts();
 
 public:
 	static CInventory* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -7,6 +7,7 @@
 #include "IngameBG.h"
 
 #include "ItemSlot.h"
+#include "LURD_Test.h"
 #include "inventory.h"
 
 #include "GameInstance.h"
@@ -112,6 +113,15 @@ HRESULT CLoader::Ready_Resources_For_GamePlayLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/Inventory.png"), 1))))
 		return E_FAIL;
 
+	/* For. Prototype_Component_Texture_ItemSlot */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TextureTag_ItemSlot,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/ItemSlot_%d.png"), 2))))
+		return E_FAIL;
+
+	/* For. Prototype_Component_Texture_LURD */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_LURD"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/LURD.png"), 1))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 	/* For. Prototype_Component_Shader_VtxNorTex*/
@@ -119,14 +129,7 @@ HRESULT CLoader::Ready_Resources_For_GamePlayLevel()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
-
-
 	lstrcpy(m_szLoadingText, TEXT("객체원형을(를) 로딩중입니다."));
-	///* For. Prototype_GameObject_Terrain */
-	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
-	//	CTerrain::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
 
 	/* For. Prototype_GameObject_FreeCamera */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FixedCamera"),
@@ -142,6 +145,17 @@ HRESULT CLoader::Ready_Resources_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(GameTag_Inventory,
 		CInventory::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For. Prototype_GameObject_ItemSlot */
+	if (FAILED(m_pGameInstance->Add_Prototype(GameTag_ItemSlot,
+		CItemSlot::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Prototype_GameObject_LURD_Test */
+	if (FAILED(m_pGameInstance->Add_Prototype(GameTag_LURD_Test,
+		CItemSlot::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

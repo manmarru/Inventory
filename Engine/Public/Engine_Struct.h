@@ -10,7 +10,7 @@ namespace Engine
 		bool			isWindowsed;
 	}ENGINE_DESC;
 
-	typedef struct ENGINE_DLL
+	typedef struct ENGINE_DLL 
 	{
 		XMFLOAT3		vPosition;
 		XMFLOAT2		vTexcoord;

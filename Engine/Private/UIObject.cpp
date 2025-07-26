@@ -7,7 +7,7 @@ CUIObject::CUIObject(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 }
 
 CUIObject::CUIObject(const CUIObject & Prototype)
-	: CGameObject{ Prototype }
+	: CGameObject(Prototype)
 {
 
 }
@@ -25,7 +25,7 @@ HRESULT CUIObject::Initialize(void * pArg)
 	m_fX = pDesc->fX;
 	m_fY = pDesc->fY;
 	m_fSizeX = pDesc->fSizeX;
-	m_fSizeY = pDesc->fSizeY;	
+	m_fSizeY = pDesc->fSizeY;
 
 	_uint		iNumView = { 1 };
 	D3D11_VIEWPORT		ViewportDesc{};

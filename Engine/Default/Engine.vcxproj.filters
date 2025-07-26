@@ -171,6 +171,7 @@
     <ClCompile Include="..\private\UIManager.cpp">
       <Filter>01.Utility\06.UIManager</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\ItemIcon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Base.h">
@@ -263,6 +264,7 @@
     <ClInclude Include="..\public\UIManager.h">
       <Filter>01.Utility\06.UIManager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ItemIcon.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Shader_Engine_Defines.hlsli">
