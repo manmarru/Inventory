@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Inventory.h"
 #include "ItemSlot.h"
+#include "ItemIcon.h"
 
 #include "GameInstance.h"
 
@@ -50,7 +51,16 @@ void CInventory::Priority_Update(_float fTimeDelta) {}
 
 void CInventory::Update(_float fTimeDelta) 
 {
-	Key_Input();
+
+
+
+
+	if (m_bActive == true)
+	{
+		Key_Input();
+
+		Mouse_Input();
+	}
 }
 
 void CInventory::Late_Update(_float fTimeDelta)
@@ -63,10 +73,14 @@ void CInventory::Late_Update(_float fTimeDelta)
 
 		CItemSlot::s_fPivotY = m_fY;
 		CItemSlot::s_fPivotX = m_fX;
+		CItemIcon::s_fPivotY = m_fY;
+		CItemIcon::s_fPivotX = m_fX;
 		for (int i = 0; i < ItemSlotLength; ++i)
 		{
 			m_ItemSlots[i]->Late_Update(fTimeDelta);
+			m_ItemIcons[i]->Late_Update(fTimeDelta);
 			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)m_ItemSlots[i]);
+			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)m_ItemIcons[i]);
 		}
 	}
 }
@@ -95,34 +109,71 @@ HRESULT CInventory::Render()
 
 void CInventory::Key_Input()
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_I) & 0x8000)
+	if (m_pGameInstance->GetButtonDown(KeyType::I))
 	{
-		if(false == m_KeyDown_I)
-			m_bActive = !m_bActive;
-		m_KeyDown_I = true;
+		m_bActive = !m_bActive;
 	}
-	else
-		m_KeyDown_I = false;
 
-	if (m_bActive == false)
+	if (m_pGameInstance->GetButtonDown(KeyType::Q))
+	{
+		Add_Item(ITEM_POTION_1, 1);
+	}
+
+	if (m_pGameInstance->GetButtonDown(KeyType::E))
+	{
+		Add_Item(ITEM_POTION_2, 1);
+	}
+}
+
+void CInventory::Mouse_Input()
+{
+	POINT MousePos = m_pGameInstance->Get_MousePos();
+
+	if (false == MouseOverButton(MousePos))
+	{
 		return;
+	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_W) & 0x8000)
+	if (MousePos.y <= m_fY - InventorySizeY * 0.5f + 25)
 	{
-		m_fY -= 1;
+		if(m_pGameInstance->GetButtonDown(KeyType::LeftMouse))
+		{
+			m_fX += m_pGameInstance->Get_DIMouseMove(DIMM_X);
+			m_fY += m_pGameInstance->Get_DIMouseMove(DIMM_Y);
+		}
 	}
-	else if (m_pGameInstance->Get_DIKeyState(DIK_S) & 0x8000)
+
+	int SelectedSlot = MouseCheck(MousePos);
+
+	if (m_pGameInstance->GetButtonDown(KeyType::RightMouse))
 	{
-		m_fY += 1;
+		Replace_Item(SelectedSlot, 1);
 	}
-	else if (m_pGameInstance->Get_DIKeyState(DIK_A) & 0x8000)
+}
+
+int CInventory::MouseCheck(POINT MousePos)
+{
+	int Result{ -1 };
+	for (int Index = 0; Index < ItemSlotLength; ++Index)
 	{
-		m_fX -= 1;
+		if (m_ItemSlots[Index]->MouseCheck(&MousePos) == true)
+			Result = Index;
 	}
-	else if (m_pGameInstance->Get_DIKeyState(DIK_D) & 0x8000)
+
+	return Result;
+}
+
+bool CInventory::MouseOverButton(POINT pMouse)
+{
+	if (pMouse.x < m_fX - InventorySizeX * 0.5f
+		|| pMouse.x > m_fX + InventorySizeX * 0.5f
+		|| pMouse.y < m_fY - InventorySizeY * 0.5f
+		|| pMouse.y > m_fY + InventorySizeY * 0.5f)
 	{
-		m_fX += 1;
+		return false;
 	}
+
+	return true;
 }
 
 void CInventory::Swap_Item(COOR Pick, COOR Drop)
@@ -142,7 +193,8 @@ bool CInventory::Add_Item(ITEMID Item, int Amount)
 	{
 		if (m_Items[i] == ITEM_NONE)
 		{
-			m_Items[i] == Item;
+			m_Items[i] = Item;
+			m_ItemIcons[i]->Set_ItemIcon(Item);
 			++m_ItemSize[Item];
 			return true;
 		}
@@ -151,9 +203,9 @@ bool CInventory::Add_Item(ITEMID Item, int Amount)
 	return false;
 }
 
-bool CInventory::Replace_Item(COOR Pick, int Amount)
+bool CInventory::Replace_Item(int Index, int Amount)
 {
-	ITEMID PickItem = m_Items[Pick.y * ItemSlotLengthX + Pick.x];
+	ITEMID PickItem = m_Items[Index];
 	if (m_ItemSize[PickItem] < Amount)
 	{
 		return false;
@@ -162,11 +214,11 @@ bool CInventory::Replace_Item(COOR Pick, int Amount)
 	m_ItemSize[PickItem] -= Amount;
 	if (m_ItemSize[PickItem] == 0)
 	{
-		m_Items[Pick.y * ItemSlotLengthX + Pick.x] == ITEM_NONE;
+		m_Items[Index] = ITEM_NONE;
+		m_ItemIcons[Index]->Set_ItemIcon(ITEM_NONE);
 	}
-	
 
-	return false;
+	return true;
 }
 
 void CInventory::Sort_Items()
@@ -200,6 +252,12 @@ void CInventory::Sort_Items()
 	}
 }
 
+void CInventory::Set_ItemIcon(ITEMID Item, int Index, int Amount)
+{
+	m_Items[Index] = Item;
+	m_ItemIcons[Index]->Set_ItemIcon(Item);
+}
+
 HRESULT CInventory::Ready_Components()
 {
 	/* FOR.Com_Shader */
@@ -225,6 +283,7 @@ HRESULT CInventory::Ready_Parts()
 {
 	CItemSlot::ITEMSLOT_DESC Desc;
 	m_ItemSlots.resize(ItemSlotLength, nullptr);
+	m_ItemIcons.resize(ItemSlotLength, nullptr);
 	for (int y = 0; y < ItemSlotLengthY; ++y)
 	{
 		for (int x = 0; x < ItemSlotLengthX; ++x)
@@ -233,6 +292,8 @@ HRESULT CInventory::Ready_Parts()
 			Desc.fOffsetX = ItemSlotSize * x - 180;
 			int Index = y * ItemSlotLengthX + x;
 			if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_ItemSlots[Index], GameTag_ItemSlot, &Desc)))
+				return E_FAIL;
+			if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_ItemIcons[Index], GameTag_ItemIcon, &Desc)))
 				return E_FAIL;
 		}
 	}
@@ -270,9 +331,14 @@ void CInventory::Free()
 {
 	__super::Free();
 
+	
 	for(CItemSlot* pItemSlot : m_ItemSlots)
 	{
 		Safe_Release(pItemSlot);
+	}
+	for (CItemIcon* pItemIcon : m_ItemIcons)
+	{
+		Safe_Release(pItemIcon);
 	}
 
 	Safe_Release(m_pShaderCom);

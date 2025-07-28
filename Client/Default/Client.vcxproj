@@ -171,6 +171,7 @@
     <ClInclude Include="..\public\FreeCamera.h" />
     <ClInclude Include="..\public\IngameBG.h" />
     <ClInclude Include="..\public\Inventory.h" />
+    <ClInclude Include="..\public\ItemIcon.h" />
     <ClInclude Include="..\public\ItemSlot.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="..\private\FreeCamera.cpp" />
     <ClCompile Include="..\private\IngameBG.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />
+    <ClCompile Include="..\private\ItemIcon.cpp" />
     <ClCompile Include="..\private\ItemSlot.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />

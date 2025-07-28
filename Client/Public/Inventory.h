@@ -42,22 +42,25 @@ public:
 
 public:
 	void Key_Input();
+	void Mouse_Input();
+	int MouseCheck(POINT MousePos);
+	bool MouseOverButton(POINT pMouse);
 
 public:
 	void Swap_Item(COOR Pick, COOR Drop);
 	bool Add_Item(ITEMID Item, int Amount);
-	bool Replace_Item(COOR Pick, int Amount);
+	bool Replace_Item(int Index, int Amount);
 	void Sort_Items();
-
+	void Set_ItemIcon(ITEMID Item, int Index, int Amount);
 
 private:
 	vector<ITEMID> m_Items;
 	vector<char> m_SortLock;
 	unordered_map<ITEMID, int> m_ItemSize;
-	bool m_KeyDown_I = { false };
 
 private:
 	vector<class CItemSlot*> m_ItemSlots;
+	vector<class CItemIcon*> m_ItemIcons;
 
 private:
 	HRESULT Ready_Components();

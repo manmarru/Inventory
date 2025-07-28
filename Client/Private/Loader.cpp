@@ -7,6 +7,7 @@
 #include "IngameBG.h"
 
 #include "ItemSlot.h"
+#include "ItemIcon.h"
 #include "LURD_Test.h"
 #include "inventory.h"
 
@@ -108,16 +109,6 @@ HRESULT CLoader::Ready_Resources_For_GamePlayLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/IngameBG.png"), 1))))
 		return E_FAIL;
 
-	/* For. Prototype_Component_Texture_Inventory */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TextureTag_Inventory,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/Inventory.png"), 1))))
-		return E_FAIL;
-
-	/* For. Prototype_Component_Texture_ItemSlot */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TextureTag_ItemSlot,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/ItemSlot_%d.png"), 2))))
-		return E_FAIL;
-
 	/* For. Prototype_Component_Texture_LURD */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_LURD"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/LURD.png"), 1))))
@@ -141,6 +132,43 @@ HRESULT CLoader::Ready_Resources_For_GamePlayLevel()
 		CIngameBG::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+
+	/* For. Prototype_GameObject_LURD_Test */
+	if (FAILED(m_pGameInstance->Add_Prototype(GameTag_LURD_Test,
+		CItemSlot::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("인벤토리를 로딩중입니다."));
+	Ready_Resources_For_Inventory();
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Ready_Resources_For_Inventory()
+{
+	//Texture
+
+	/* For. Prototype_Component_Texture_Inventory */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TextureTag_Inventory,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/Inventory.png"), 1))))
+		return E_FAIL;
+
+	/* For. Prototype_Component_Texture_ItemSlot */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TextureTag_ItemSlot,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/ItemSlot_%d.png"), 2))))
+		return E_FAIL;
+
+	/* For. Prototype_Component_Texture_ItemIcon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TextureTag_ItemIcon,
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/ItemIcon_%d.png"), 3))))
+		return E_FAIL;
+
+	//Prototype
+
 	/* For. Prototype_GameObject_Inventory */
 	if (FAILED(m_pGameInstance->Add_Prototype(GameTag_Inventory,
 		CInventory::Create(m_pDevice, m_pContext))))
@@ -151,15 +179,10 @@ HRESULT CLoader::Ready_Resources_For_GamePlayLevel()
 		CItemSlot::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For. Prototype_GameObject_LURD_Test */
-	if (FAILED(m_pGameInstance->Add_Prototype(GameTag_LURD_Test,
-		CItemSlot::Create(m_pDevice, m_pContext))))
+	/* For. Prototype_GameObject_ItemIcon */
+	if (FAILED(m_pGameInstance->Add_Prototype(GameTag_ItemIcon,
+		CItemIcon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-
-	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
-
-	m_isFinished = true;
 
 	return S_OK;
 }

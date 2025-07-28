@@ -1,26 +1,32 @@
 #pragma once
 #include "Client_Defines.h"
-#include "UIObject.h"
+#include "C:\Users\soboru\Desktop\Inventory\EngineSDK\Inc\UIObject.h"
 
+#define ItemIconSize 30
+
+#define GameTag_ItemIcon TEXT("Prototype_GameObject_ItemIcon")
+#define TextureTag_ItemIcon TEXT("Prototype_Component_Texture_ItemIcon")
 
 BEGIN(Engine)
 class CShader;
 class CTexture;
-class CVIBUFFER_RECT;
+class CVIBuffer_Rect;
 END
+
 
 BEGIN(Client)
 class CItemIcon :
     public CUIObject
 {
+public:
 	typedef struct ITEMICON_DESC : public CUIObject::UI_DESC
 	{
 		_float fOffsetX{}, fOffsetY{};
 	};
 private:
-    CItemIcon(ID3D11Device* pDevice, ID3D11DeviceContext pContext);
-    CItemIcon(const CItemIcon& Prototype);
-    ~CItemIcon() = default;
+	CItemIcon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CItemIcon(const CItemIcon& Prototype);
+	virtual ~CItemIcon() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -29,6 +35,9 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+public:
+	void Set_ItemIcon(ITEMID Item) { m_Item = Item; }
 
 public:
 	class CShader* m_pShaderCom = { nullptr };
@@ -40,6 +49,7 @@ public:
 private:
 	_float m_fOffsetX;
 	_float m_fOffsetY;
+	ITEMID m_Item = { ITEM_NONE };
 
 private:
 	HRESULT Ready_Components();

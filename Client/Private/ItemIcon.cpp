@@ -1,37 +1,38 @@
 #include "stdafx.h"
-#include "ItemSlot.h"
 
+#include "ItemIcon.h"
 #include "GameInstance.h"
 
-_float CItemSlot::s_fPivotX = 0;
-_float CItemSlot::s_fPivotY = 0;
+_float CItemIcon::s_fPivotX = 0;
+_float CItemIcon::s_fPivotY = 0;
 
-CItemSlot::CItemSlot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+
+CItemIcon::CItemIcon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUIObject{ pDevice, pContext }
-{	
+{
 }
 
-CItemSlot::CItemSlot(const CItemSlot& Prototype)
+CItemIcon::CItemIcon(const CItemIcon& Prototype)
 	:CUIObject(Prototype)
 {
 }
 
-HRESULT CItemSlot::Initialize_Prototype()
+HRESULT CItemIcon::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CItemSlot::Initialize(void* pArg)
+HRESULT CItemIcon::Initialize(void* pArg)
 {
-	ITEMSLOT_DESC* Desc = static_cast<ITEMSLOT_DESC*>(pArg);
+	ITEMICON_DESC* Desc = static_cast<ITEMICON_DESC*>(pArg);
 	Desc->fX = g_iWinSizeX >> 1;
 	Desc->fY = g_iWinSizeY >> 1;
-	Desc->fSizeX = ItemSlotSize;
-	Desc->fSizeY = ItemSlotSize;
+	Desc->fSizeX = ItemIconSize;
+	Desc->fSizeY = ItemIconSize;
 
 	Desc->fSpeedPerSec = 0.f;
 	Desc->fRotationPerSec = XMConvertToRadians(90.f);
-	
+
 	m_fOffsetX = Desc->fOffsetX;
 	m_fOffsetY = Desc->fOffsetY;
 
@@ -44,23 +45,23 @@ HRESULT CItemSlot::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CItemSlot::Priority_Update(_float fTimeDelta)
+void CItemIcon::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CItemSlot::Update(_float fTimeDelta)
+void CItemIcon::Update(_float fTimeDelta)
 {
 }
 
-void CItemSlot::Late_Update(_float fTimeDelta)
+void CItemIcon::Late_Update(_float fTimeDelta)
 {
 	m_fX = s_fPivotX + m_fOffsetX;
 	m_fY = s_fPivotY + m_fOffsetY;
-	
+
 	__super::Late_Update(fTimeDelta);
 }
 
-HRESULT CItemSlot::Render()
+HRESULT CItemIcon::Render()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -68,7 +69,7 @@ HRESULT CItemSlot::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pTextureCom->Bind_ShadeResource(m_pShaderCom, "g_Texture", m_iRenderTexture)))
+	if (FAILED(m_pTextureCom->Bind_ShadeResource(m_pShaderCom, "g_Texture", m_Item)))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Begin(0)))
@@ -82,21 +83,7 @@ HRESULT CItemSlot::Render()
 	return S_OK;
 }
 
-bool CItemSlot::MouseCheck(LPPOINT MousePos)
-{
-	if (MousePos->x < m_fX - ItemSlotSize * 0.5f
-		|| MousePos->x > m_fX + ItemSlotSize * 0.5f
-		|| MousePos->y < m_fY - ItemSlotSize * 0.5f
-		|| MousePos->y > m_fY + ItemSlotSize * 0.5f)
-	{
-		m_iRenderTexture = 0;
-		return false;
-	}
-	m_iRenderTexture = 1;
-	return true;
-}
-
-HRESULT CItemSlot::Ready_Components()
+HRESULT CItemIcon::Ready_Components()
 {
 	/* FOR.Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex"),
@@ -104,7 +91,7 @@ HRESULT CItemSlot::Ready_Components()
 		return E_FAIL;
 
 	/* FOR.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TextureTag_ItemSlot,
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TextureTag_ItemIcon,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -117,34 +104,33 @@ HRESULT CItemSlot::Ready_Components()
 	return S_OK;
 }
 
-
-CItemSlot* CItemSlot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CItemIcon* CItemIcon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CItemSlot* pInstance = new CItemSlot(pDevice, pContext);
+	CItemIcon* pInstance = new CItemIcon(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX(TEXT("Failed to Created : CItemSlot"));
+		MSG_BOX(TEXT("Failed to Created : CItemIcon"));
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CItemSlot::Clone(void* pArg)
+CGameObject* CItemIcon::Clone(void* pArg)
 {
-	CItemSlot* pInstance = new CItemSlot(*this);
+	CItemIcon* pInstance = new CItemIcon(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX(TEXT("Failed to Cloned : CItemSlot"));
+		MSG_BOX(TEXT("Failed to Cloned : CItemIcon"));
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CItemSlot::Free()
+void CItemIcon::Free()
 {
 	__super::Free();
 	Safe_Release(m_pShaderCom);

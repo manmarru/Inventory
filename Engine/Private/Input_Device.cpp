@@ -7,6 +7,7 @@ Engine::CInput_Device::CInput_Device(void)
 
 HRESULT Engine::CInput_Device::Initialize(HINSTANCE hInst, HWND hWnd)
 {
+	m_hWnd = hWnd;
 	// DInput 컴객체를 생성하는 함수
 	if (FAILED(DirectInput8Create(hInst,
 		DIRECTINPUT_VERSION,
@@ -42,12 +43,14 @@ HRESULT Engine::CInput_Device::Initialize(HINSTANCE hInst, HWND hWnd)
 	// 장치에 대한 access 버전을 받아오는 함수
 	m_pMouse->Acquire();
 
-
 	return S_OK;
 }
 
 void Engine::CInput_Device::Update(void)
 {
+	GetCursorPos(&m_tMousePos);
+	ScreenToClient(m_hWnd, &m_tMousePos);
+
 	/* 키보드와 마우스의 상태를 얻어와서 저장해준다. */
 	m_pKeyBoard->GetDeviceState(256, m_byKeyState);
 	m_pMouse->GetDeviceState(sizeof(m_tMouseState), &m_tMouseState);

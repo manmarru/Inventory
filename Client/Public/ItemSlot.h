@@ -36,15 +36,19 @@ public:
 	virtual HRESULT Render() override;
 
 public:
+	bool MouseCheck(LPPOINT MousePos);
+
+public:
 	class CShader* m_pShaderCom = { nullptr };
 	class CTexture* m_pTextureCom = { nullptr };
 	class CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 	static _float s_fPivotX;
 	static _float s_fPivotY;
-	
+
 private:
 	_float m_fOffsetX;
 	_float m_fOffsetY;
+	_uint m_iRenderTexture{ 0 };
 
 private:
 	HRESULT Ready_Components();

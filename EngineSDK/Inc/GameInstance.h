@@ -3,6 +3,7 @@
 #include "Component_Manager.h"
 #include "Renderer.h"
 #include "PipeLine.h"
+#include "KeyMgr.h"
 
 /* 1. 엔진과 클라이언트의 소통을 위한 클래스읻. */
 /* 2. 엔진에서 클라이언트에 보여주고 싶은 함수들을 모아놓는다. */
@@ -34,6 +35,7 @@ public:
 	_byte	Get_DIKeyState(_ubyte byKeyID);
 	_byte	Get_DIMouseState(MOUSEKEYSTATE eMouse);
 	_long	Get_DIMouseMove(MOUSEMOVESTATE eMouseState);	
+	POINT	Get_MousePos();
 #pragma endregion
 
 #pragma region LEVEL_MANAGER
@@ -73,6 +75,15 @@ public:
 	_vector Get_CamPosition_Vector() const;
 #pragma endregion
 
+#pragma region KeyMgr
+	//누르고 있을 때
+	bool GetButton(KeyType key);
+	//맨 처음 눌렀을 때
+	bool GetButtonDown(KeyType key);
+	//맨 처음 눌렀다가 땔 때
+	bool GetButtonUp(KeyType key);
+#pragma endregion
+
 private:
 	class CGraphic_Device*			m_pGraphic_Device = { nullptr };
 	class CInput_Device*			m_pInput_Device = { nullptr };
@@ -83,6 +94,8 @@ private:
 	class CRenderer*				m_pRenderer = { nullptr };
 	class CPipeLine*				m_pPipeLine = { nullptr };
 	class CUIManager*				m_pUIManager = { nullptr };
+	class KeyMgr*					m_pKeyMgr = { nullptr };
+
 
 public:	
 	void Release_Engine();

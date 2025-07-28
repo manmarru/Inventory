@@ -91,6 +91,9 @@
     <Filter Include="98.ShaderFiles">
       <UniqueIdentifier>{21da6cab-aa63-43b3-8df9-c400e12a4b7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\07.KeyMgr">
+      <UniqueIdentifier>{18c158f9-ca27-4c05-ac19-a5cef059786c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -171,7 +174,9 @@
     <ClCompile Include="..\private\UIManager.cpp">
       <Filter>01.Utility\06.UIManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ItemIcon.cpp" />
+    <ClCompile Include="..\Private\KeyMgr.cpp">
+      <Filter>01.Utility\07.KeyMgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Base.h">
@@ -264,7 +269,9 @@
     <ClInclude Include="..\public\UIManager.h">
       <Filter>01.Utility\06.UIManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ItemIcon.h" />
+    <ClInclude Include="..\Public\KeyMgr.h">
+      <Filter>01.Utility\07.KeyMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Shader_Engine_Defines.hlsli">

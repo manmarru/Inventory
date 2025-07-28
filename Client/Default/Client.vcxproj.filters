@@ -117,6 +117,9 @@
     <ClInclude Include="..\public\LURD_Test.h">
       <Filter>02.GameObjects\03.UI\LURD_Test</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ItemIcon.h">
+      <Filter>02.GameObjects\03.UI\Inventory\ItemIcon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -166,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="..\private\LURD_Test.cpp">
       <Filter>02.GameObjects\03.UI\LURD_Test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ItemIcon.cpp">
+      <Filter>02.GameObjects\03.UI\Inventory\ItemIcon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

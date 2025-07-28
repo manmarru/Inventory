@@ -6,7 +6,6 @@
 #include "Input_Device.h"
 #include "UIManager.h"
 
-
 IMPLEMENT_SINGLETON(CGameInstance)
 
 CGameInstance::CGameInstance()
@@ -34,10 +33,13 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 		return E_FAIL;
 
 	/* 입력장치를 초기화한다. */
+	m_pKeyMgr = KeyMgr::Create();
+	if (nullptr == m_pKeyMgr)
+		return E_FAIL;
+
 	m_pInput_Device = CInput_Device::Create(hInst, EngineDesc.hWnd);
 	if (nullptr == m_pInput_Device)
 		return E_FAIL;
-
 
 	/* 여러가지 매니져를 초기화한다. */
 	m_pLevel_Manager = CLevel_Manager::Create();
@@ -65,6 +67,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 {
 	/* 현재 키보드와 마우스의 상태를 받아올꺼야. */
 	m_pInput_Device->Update();
+
+	m_pKeyMgr->Update();
 
 	m_pObject_Manager->Priority_Update(fTimeDelta);	
 
@@ -127,6 +131,11 @@ _byte CGameInstance::Get_DIMouseState(MOUSEKEYSTATE eMouse)
 _long CGameInstance::Get_DIMouseMove(MOUSEMOVESTATE eMouseState)
 {
 	return m_pInput_Device->Get_DIMouseMove(eMouseState);
+}
+
+POINT CGameInstance::Get_MousePos()
+{
+	return m_pInput_Device->Get_MousePos();
 }
 
 #pragma endregion
@@ -233,6 +242,25 @@ _vector CGameInstance::Get_CamPosition_Vector() const
 }
 #pragma endregion
 
+#pragma region KEYMGR
+//누르고 있을 때
+bool CGameInstance::GetButton(KeyType key)
+{
+	return m_pKeyMgr->GetButton(key);
+}
+//맨 처음 눌렀을 때
+bool CGameInstance::GetButtonDown(KeyType key)
+{
+	return m_pKeyMgr->GetButtonDown(key);
+}
+//맨 처음 눌렀다가 땔 때
+bool CGameInstance::GetButtonUp(KeyType key)
+{
+	return m_pKeyMgr->GetButtonUp(key);
+}
+#pragma endregion
+
+
 void CGameInstance::Release_Engine()
 {	
 	Safe_Release(m_pPipeLine);
@@ -244,6 +272,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pUIManager);
+	Safe_Release(m_pKeyMgr);
 
 	CGameInstance::Get_Instance()->Destroy_Instance();	
 }

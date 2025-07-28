@@ -24,7 +24,9 @@ public:
 	{			
 		return *(((_long*)&m_tMouseState) + eMouseState);	
 	}
-	
+	POINT Get_MousePos() { return m_tMousePos; }
+
+
 public:
 	HRESULT Initialize(HINSTANCE hInst, HWND hWnd);
 	void	Update(void);
@@ -42,6 +44,9 @@ private:
 private:	
 	_byte					m_byKeyState[256] = {};			// 키보드에 있는 모든 키값을 저장하기 위한 변수
 	DIMOUSESTATE			m_tMouseState = {};
+	POINT m_tMousePos = {};
+	HWND m_hWnd = {};
+	
 
 public:
 	static CInput_Device* Create(HINSTANCE hInst, HWND hWnd);
