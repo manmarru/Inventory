@@ -38,6 +38,7 @@ public:
 
 public:
 	void Set_ItemIcon(ITEMID Item) { m_Item = Item; }
+	void Set_StickToMouse(bool StickToMouse) { m_bStickToMouse = StickToMouse; }
 
 public:
 	class CShader* m_pShaderCom = { nullptr };
@@ -49,6 +50,7 @@ public:
 private:
 	_float m_fOffsetX;
 	_float m_fOffsetY;
+	bool m_bStickToMouse;
 	ITEMID m_Item = { ITEM_NONE };
 
 private:

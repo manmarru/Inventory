@@ -55,8 +55,17 @@ void CItemIcon::Update(_float fTimeDelta)
 
 void CItemIcon::Late_Update(_float fTimeDelta)
 {
-	m_fX = s_fPivotX + m_fOffsetX;
-	m_fY = s_fPivotY + m_fOffsetY;
+	if (m_bStickToMouse == true)
+	{
+		POINT Temp = m_pGameInstance->Get_MousePos();
+		m_fX = Temp.x;
+		m_fY = Temp.y;
+	}
+	else
+	{
+		m_fX = s_fPivotX + m_fOffsetX;
+		m_fY = s_fPivotY + m_fOffsetY;
+	}
 
 	__super::Late_Update(fTimeDelta);
 }

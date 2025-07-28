@@ -51,10 +51,6 @@ void CInventory::Priority_Update(_float fTimeDelta) {}
 
 void CInventory::Update(_float fTimeDelta) 
 {
-
-
-
-
 	if (m_bActive == true)
 	{
 		Key_Input();
@@ -81,6 +77,11 @@ void CInventory::Late_Update(_float fTimeDelta)
 			m_ItemIcons[i]->Late_Update(fTimeDelta);
 			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)m_ItemSlots[i]);
 			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)m_ItemIcons[i]);
+		}
+
+		if (m_iSelectedIndex != -1)
+		{
+			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)(m_ItemIcons[m_iSelectedIndex]));
 		}
 	}
 }
@@ -129,6 +130,18 @@ void CInventory::Mouse_Input()
 {
 	POINT MousePos = m_pGameInstance->Get_MousePos();
 
+	if (m_pGameInstance->GetButtonUp(KeyType::LeftMouse) && m_iSelectedIndex != -1)
+	{
+		int SwapIndex = MouseCheck(MousePos);
+		if (SwapIndex != -1)
+		{
+			Swap_Item(SwapIndex, m_iSelectedIndex);
+		}
+
+		m_ItemIcons[m_iSelectedIndex]->Set_StickToMouse(false);
+		m_iSelectedIndex = -1;
+	}
+
 	if (false == MouseOverButton(MousePos))
 	{
 		return;
@@ -144,10 +157,17 @@ void CInventory::Mouse_Input()
 	}
 
 	int SelectedSlot = MouseCheck(MousePos);
+	if (SelectedSlot == -1)
+		return;
 
 	if (m_pGameInstance->GetButtonDown(KeyType::RightMouse))
 	{
 		Replace_Item(SelectedSlot, 1);
+	}
+	else if (m_pGameInstance->GetButtonDown(KeyType::LeftMouse))
+	{
+		m_iSelectedIndex = SelectedSlot;
+		m_ItemIcons[SelectedSlot]->Set_StickToMouse(true);
 	}
 }
 
@@ -176,9 +196,11 @@ bool CInventory::MouseOverButton(POINT pMouse)
 	return true;
 }
 
-void CInventory::Swap_Item(COOR Pick, COOR Drop)
+void CInventory::Swap_Item(int PickIndex, int DropIndex)
 {
-	swap(m_Items[Pick.y * ItemSlotLengthX + Pick.x], m_Items[Pick.y * ItemSlotLengthX + Pick.x]);
+	swap(m_Items[PickIndex], m_Items[DropIndex]);
+	Syncro_ItemSlot(PickIndex);
+	Syncro_ItemSlot(DropIndex);
 }
 
 bool CInventory::Add_Item(ITEMID Item, int Amount)
@@ -256,6 +278,11 @@ void CInventory::Set_ItemIcon(ITEMID Item, int Index, int Amount)
 {
 	m_Items[Index] = Item;
 	m_ItemIcons[Index]->Set_ItemIcon(Item);
+}
+
+void CInventory::Syncro_ItemSlot(int SlotIndex)
+{
+	m_ItemIcons[SlotIndex]->Set_ItemIcon(m_Items[SlotIndex]);
 }
 
 HRESULT CInventory::Ready_Components()

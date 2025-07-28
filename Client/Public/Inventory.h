@@ -47,11 +47,15 @@ public:
 	bool MouseOverButton(POINT pMouse);
 
 public:
-	void Swap_Item(COOR Pick, COOR Drop);
+	void Swap_Item(int PickIndex, int DropIndex);
 	bool Add_Item(ITEMID Item, int Amount);
 	bool Replace_Item(int Index, int Amount);
 	void Sort_Items();
 	void Set_ItemIcon(ITEMID Item, int Index, int Amount);
+	void Syncro_ItemSlot(int SlotIndex);
+
+private:
+	int m_iSelectedIndex{ -1 };
 
 private:
 	vector<ITEMID> m_Items;
