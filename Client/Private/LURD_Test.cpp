@@ -46,38 +46,38 @@ void CLURD_Test::Priority_Update(_float fTimeDelta)
 
 void CLURD_Test::Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_1))
+	if (m_pGameInstance->GetButton(KeyType::KEY_1))
 	{
 		m_fSizeX += 1;
 	}
-	else if (m_pGameInstance->Get_DIKeyState(DIK_2))
+	else 	if (m_pGameInstance->GetButton(KeyType::KEY_2))
 	{
 		m_fSizeX -= 1;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_3))
+	if (m_pGameInstance->GetButton(KeyType::KEY_3))
 	{
 		m_fSizeY += 1;
 	}
-	else if (m_pGameInstance->Get_DIKeyState(DIK_4))
+	else if (m_pGameInstance->GetButton(KeyType::KEY_4))
 	{
 		m_fSizeY -= 1;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_J))
+	if (m_pGameInstance->GetButton(KeyType::J))
 	{
 		m_fX -= 1;
 	}
-	else if (m_pGameInstance->Get_DIKeyState(DIK_L))
+	else if (m_pGameInstance->GetButton(KeyType::L))
 	{
 		m_fX += 1;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_I))
+	if (m_pGameInstance->GetButton(KeyType::I))
 	{
 		m_fY -= 1;
 	}
-	else if (m_pGameInstance->Get_DIKeyState(DIK_K))
+	else if (m_pGameInstance->GetButton(KeyType::K))
 	{
 		m_fY += 1;
 	}

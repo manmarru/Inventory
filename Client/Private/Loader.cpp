@@ -8,8 +8,10 @@
 
 #include "ItemSlot.h"
 #include "ItemIcon.h"
+#include "ButtonUI.h"
 #include "LURD_Test.h"
 #include "inventory.h"
+
 
 #include "GameInstance.h"
 
@@ -167,6 +169,11 @@ HRESULT CLoader::Ready_Resources_For_Inventory()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/ItemIcon_%d.png"), 3))))
 		return E_FAIL;
 
+	/* For. Prototype_Component_Texture_ButtonUI_Sort */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_ButtonUI_Sort"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/SortButton.png"), 1))))
+		return E_FAIL;
+
 	//Prototype
 
 	/* For. Prototype_GameObject_Inventory */
@@ -182,6 +189,11 @@ HRESULT CLoader::Ready_Resources_For_Inventory()
 	/* For. Prototype_GameObject_ItemIcon */
 	if (FAILED(m_pGameInstance->Add_Prototype(GameTag_ItemIcon,
 		CItemIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For. Prototype_GameObject_ButtonUI */
+	if (FAILED(m_pGameInstance->Add_Prototype(GameTag_ButtonUI,
+		CButtonUI::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

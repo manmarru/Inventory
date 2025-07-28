@@ -41,6 +41,7 @@ public:
 	class CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 public:
+	void Active() { m_bActive = true; }
 	void Key_Input();
 	void Mouse_Input();
 	int MouseCheck(POINT MousePos);
@@ -65,6 +66,7 @@ private:
 private:
 	vector<class CItemSlot*> m_ItemSlots;
 	vector<class CItemIcon*> m_ItemIcons;
+	class CButtonUI* m_pSortButton;
 
 private:
 	HRESULT Ready_Components();

@@ -1,75 +1,59 @@
 #include "stdafx.h"
 
-#include "ItemIcon.h"
+#include "ButtonUI.h"
 #include "GameInstance.h"
 
-_float CItemIcon::s_fPivotX = 0;
-_float CItemIcon::s_fPivotY = 0;
 
-
-CItemIcon::CItemIcon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CButtonUI::CButtonUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUIObject{ pDevice, pContext }
 {
 }
 
-CItemIcon::CItemIcon(const CItemIcon& Prototype)
+CButtonUI::CButtonUI(const CButtonUI& Prototype)
 	:CUIObject(Prototype)
 {
 }
 
-HRESULT CItemIcon::Initialize_Prototype()
+HRESULT CButtonUI::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CItemIcon::Initialize(void* pArg)
+HRESULT CButtonUI::Initialize(void* pArg)
 {
-	ITEMICON_DESC* Desc = static_cast<ITEMICON_DESC*>(pArg);
+	BUTTONUI_DESC* Desc = static_cast<BUTTONUI_DESC*>(pArg);
 	Desc->fX = 0; Desc->fY = 0;
-	Desc->fSizeX = ItemIconSize;
-	Desc->fSizeY = ItemIconSize;
-
 	Desc->fSpeedPerSec = 0.f;
 	Desc->fRotationPerSec = XMConvertToRadians(90.f);
-
 	m_fOffsetX = Desc->fOffsetX;
 	m_fOffsetY = Desc->fOffsetY;
 
 	if (FAILED(__super::Initialize(Desc)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(Desc->TextureTag)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-void CItemIcon::Priority_Update(_float fTimeDelta)
+void CButtonUI::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CItemIcon::Update(_float fTimeDelta)
+void CButtonUI::Update(_float fTimeDelta)
 {
 }
 
-void CItemIcon::Late_Update(_float fTimeDelta)
+void CButtonUI::Late_Update(_float fTimeDelta)
 {
-	if (m_bStickToMouse == true)
-	{
-		POINT Temp = m_pGameInstance->Get_MousePos();
-		m_fX = Temp.x;
-		m_fY = Temp.y;
-	}
-	else
-	{
-		m_fX = s_fPivotX + m_fOffsetX;
-		m_fY = s_fPivotY + m_fOffsetY;
-	}
+	m_fX = m_fPivotX + m_fOffsetX;
+	m_fY = m_fPivotY + m_fOffsetY;
 
 	__super::Late_Update(fTimeDelta);
 }
 
-HRESULT CItemIcon::Render()
+HRESULT CButtonUI::Render()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -77,7 +61,7 @@ HRESULT CItemIcon::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pTextureCom->Bind_ShadeResource(m_pShaderCom, "g_Texture", m_Item)))
+	if (FAILED(m_pTextureCom->Bind_ShadeResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Begin(0)))
@@ -91,7 +75,7 @@ HRESULT CItemIcon::Render()
 	return S_OK;
 }
 
-HRESULT CItemIcon::Ready_Components()
+HRESULT CButtonUI::Ready_Components(_wstring TextureTag)
 {
 	/* FOR.Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex"),
@@ -99,7 +83,7 @@ HRESULT CItemIcon::Ready_Components()
 		return E_FAIL;
 
 	/* FOR.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TextureTag_ItemIcon,
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TextureTag,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -108,39 +92,39 @@ HRESULT CItemIcon::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
-
 	return S_OK;
 }
 
-CItemIcon* CItemIcon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CButtonUI* CButtonUI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CItemIcon* pInstance = new CItemIcon(pDevice, pContext);
+	CButtonUI* pInstance = new CButtonUI(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX(TEXT("Failed to Created : CItemIcon"));
+		MSG_BOX(TEXT("Failed to Created : CButtonUI"));
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CItemIcon::Clone(void* pArg)
+CGameObject* CButtonUI::Clone(void* pArg)
 {
-	CItemIcon* pInstance = new CItemIcon(*this);
+	CButtonUI* pInstance = new CButtonUI(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX(TEXT("Failed to Cloned : CItemIcon"));
+		MSG_BOX(TEXT("Failed to Cloned : CButtonUI"));
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CItemIcon::Free()
+void CButtonUI::Free()
 {
 	__super::Free();
+
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);

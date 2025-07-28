@@ -58,6 +58,9 @@
     <Filter Include="02.GameObjects\03.UI\LURD_Test">
       <UniqueIdentifier>{b3755a25-8c4a-47ba-8760-0ca835e73baf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03.UI\Inventory\Button">
+      <UniqueIdentifier>{bc7daa2d-7be5-4d55-ae17-5a5a8b6b5603}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -120,6 +123,9 @@
     <ClInclude Include="..\public\ItemIcon.h">
       <Filter>02.GameObjects\03.UI\Inventory\ItemIcon</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ButtonUI.h">
+      <Filter>02.GameObjects\03.UI\Inventory\Button</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -172,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ItemIcon.cpp">
       <Filter>02.GameObjects\03.UI\Inventory\ItemIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ButtonUI.cpp">
+      <Filter>02.GameObjects\03.UI\Inventory\Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

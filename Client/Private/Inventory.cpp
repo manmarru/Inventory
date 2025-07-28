@@ -2,6 +2,7 @@
 #include "Inventory.h"
 #include "ItemSlot.h"
 #include "ItemIcon.h"
+#include "ButtonUI.h"
 
 #include "GameInstance.h"
 
@@ -57,6 +58,13 @@ void CInventory::Update(_float fTimeDelta)
 
 		Mouse_Input();
 	}
+	else
+	{
+		if (m_pGameInstance->GetButtonDown(KeyType::I))
+		{
+			m_bActive = true;
+		}
+	}
 }
 
 void CInventory::Late_Update(_float fTimeDelta)
@@ -71,6 +79,7 @@ void CInventory::Late_Update(_float fTimeDelta)
 		CItemSlot::s_fPivotX = m_fX;
 		CItemIcon::s_fPivotY = m_fY;
 		CItemIcon::s_fPivotX = m_fX;
+		m_pSortButton->Set_Pivot(m_fX, m_fY);
 		for (int i = 0; i < ItemSlotLength; ++i)
 		{
 			m_ItemSlots[i]->Late_Update(fTimeDelta);
@@ -83,6 +92,9 @@ void CInventory::Late_Update(_float fTimeDelta)
 		{
 			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)(m_ItemIcons[m_iSelectedIndex]));
 		}
+
+		m_pSortButton->Late_Update(fTimeDelta);
+		m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)(m_pSortButton));
 	}
 }
 
@@ -112,7 +124,7 @@ void CInventory::Key_Input()
 {
 	if (m_pGameInstance->GetButtonDown(KeyType::I))
 	{
-		m_bActive = !m_bActive;
+		m_bActive = false;
 	}
 
 	if (m_pGameInstance->GetButtonDown(KeyType::Q))
@@ -142,19 +154,20 @@ void CInventory::Mouse_Input()
 		m_iSelectedIndex = -1;
 	}
 
-	if (false == MouseOverButton(MousePos))
-	{
-		return;
-	}
-
 	if (MousePos.y <= m_fY - InventorySizeY * 0.5f + 25)
 	{
-		if(m_pGameInstance->GetButtonDown(KeyType::LeftMouse))
+		if(m_pGameInstance->GetButton(KeyType::LeftMouse))
 		{
 			m_fX += m_pGameInstance->Get_DIMouseMove(DIMM_X);
 			m_fY += m_pGameInstance->Get_DIMouseMove(DIMM_Y);
 		}
 	}
+
+	if (false == MouseOverButton(MousePos))
+	{
+		return;
+	}
+
 
 	int SelectedSlot = MouseCheck(MousePos);
 	if (SelectedSlot == -1)
@@ -316,7 +329,7 @@ HRESULT CInventory::Ready_Parts()
 		for (int x = 0; x < ItemSlotLengthX; ++x)
 		{
 			Desc.fOffsetY = ItemSlotSize * y - 165;
-			Desc.fOffsetX = ItemSlotSize * x - 180;
+			Desc.fOffsetX = ItemSlotSize * x - 177;
 			int Index = y * ItemSlotLengthX + x;
 			if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_ItemSlots[Index], GameTag_ItemSlot, &Desc)))
 				return E_FAIL;
@@ -324,6 +337,17 @@ HRESULT CInventory::Ready_Parts()
 				return E_FAIL;
 		}
 	}
+
+	CButtonUI::BUTTONUI_DESC ButtonDesc;
+	ButtonDesc.fOffsetX = -180;
+	ButtonDesc.fOffsetY = -205;
+	ButtonDesc.fSizeX = 24;
+	ButtonDesc.fSizeY = 24;
+	ButtonDesc.fX = 0;
+	ButtonDesc.fY = 0;
+	ButtonDesc.TextureTag = TEXT("Prototype_Component_Texture_LURD");//TEXT("Prototype_Component_Texture_ButtonUI_Sort");
+	if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_pSortButton, GameTag_ButtonUI, &ButtonDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

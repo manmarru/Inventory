@@ -52,7 +52,11 @@ enum class KeyType
 	B = 'B',
 
 	P = 'P',
-	I = 'I'
+	I = 'I',
+	J = 'J',
+	K = 'K',
+	L = 'L',
+	O = 'O'
 };
 
 enum class KeyState
