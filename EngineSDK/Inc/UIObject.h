@@ -28,7 +28,9 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	bool MouseOverButton(POINT pMouse);
+	_bool MouseOverButton(POINT pMouse);
+	_float Get_fX() { return m_fX; }
+	_float Get_fY() { return m_fY; }
 
 protected:
 	_float				m_fX{}, m_fY{}, m_fSizeX{}, m_fSizeY{};

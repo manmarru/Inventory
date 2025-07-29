@@ -57,6 +57,7 @@ public:
 
 private:
 	int m_iSelectedIndex{ -1 };
+	bool m_bFontRender{ false };
 
 private:
 	vector<ITEMID> m_Items;

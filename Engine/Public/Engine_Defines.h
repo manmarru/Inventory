@@ -15,6 +15,9 @@
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 
+#include "DirectXTK\SpriteBatch.h"
+#include "DirectXTK\SpriteFont.h"
+
 using namespace DirectX;
 
 /* d3dx11에 포함되어있었지만 너무 무겁다. */

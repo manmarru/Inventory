@@ -5,6 +5,7 @@
 #include "Timer_Manager.h"
 #include "Input_Device.h"
 #include "UIManager.h"
+#include "Font_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -57,6 +58,10 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	m_pUIManager = CUIManager::Create();
 	if (nullptr == m_pUIManager)
 		return E_FAIL;	
+
+	m_pFont_Manager = CFont_Manager::Create(*ppDevice, *ppContext);
+	if (nullptr == m_pFont_Manager)
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -260,9 +265,22 @@ bool CGameInstance::GetButtonUp(KeyType key)
 }
 #pragma endregion
 
+#pragma region FONT_MANAGER 
+
+HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath)
+{
+	return m_pFont_Manager->Add_Font(strFontTag, pFontFilePath);
+}
+HRESULT CGameInstance::Render_Text(const _wstring& strFontTag, const _tchar* pText, _fvector vPosition, _fvector vColor, _float fRadian, _fvector vPivot, _float fScale)
+{
+	return m_pFont_Manager->Render(strFontTag, pText, vPosition, vColor, fRadian, vPivot, fScale);
+}
+
+#pragma endregion
 
 void CGameInstance::Release_Engine()
 {	
+	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pTimer_Manager);

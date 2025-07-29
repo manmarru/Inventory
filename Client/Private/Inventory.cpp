@@ -4,7 +4,7 @@
 #include "ItemIcon.h"
 #include "ButtonUI.h"
 #include <fstream>
-
+#include <string>
 
 #include "GameInstance.h"
 
@@ -100,29 +100,49 @@ void CInventory::Late_Update(_float fTimeDelta)
 
 		m_pSortButton->Late_Update(fTimeDelta);
 		m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)(m_pSortButton));
+		m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, this);
 	}
 }
 
 HRESULT CInventory::Render()
 {
-	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pTextureCom->Bind_ShadeResource(m_pShaderCom, "g_Texture", 0)))
-		return E_FAIL;
+	if (m_bFontRender == false)
+	{
+		if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pTextureCom->Bind_ShadeResource(m_pShaderCom, "g_Texture", 0)))
+			return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(0)))
-		return E_FAIL;
+		if (FAILED(m_pShaderCom->Begin(0)))
+			return E_FAIL;
 
-	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
-		return E_FAIL;
-	if (FAILED(m_pVIBufferCom->Render()))
-		return E_FAIL;
+		if (FAILED(m_pVIBufferCom->Bind_Buffers()))
+			return E_FAIL;
+		if (FAILED(m_pVIBufferCom->Render()))
+			return E_FAIL;
 
-	return S_OK;
+		m_bFontRender = true;
+		return S_OK;
+	}
+	else
+	{
+		for(int i = 0; i < ItemSlotLength; ++i)
+		{
+			CItemIcon* Icon = m_ItemIcons[i];
+			
+			wstring Amount = to_wstring(m_ItemSize[m_Items[i]]);
+			m_pGameInstance->Render_Text(TEXT("Font_NeoDun"), Amount.c_str(), XMVectorSet(Icon->Get_fX(), Icon->Get_fY(), 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.7f);
+		}
+		m_bFontRender = false;
+
+		return S_OK;
+	}
+
+	return E_FAIL;
 }
 
 void CInventory::Key_Input()

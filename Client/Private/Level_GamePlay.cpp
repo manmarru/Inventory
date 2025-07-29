@@ -26,6 +26,8 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 #endif // _DEBUG
 
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_NeoDun"), TEXT("../Bin/Resources/Fonts/NeoDun.spritefont"))))
+		return E_FAIL;
 
 	return S_OK;
 }
