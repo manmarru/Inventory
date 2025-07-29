@@ -47,6 +47,7 @@ public:
 	int MouseCheck(POINT MousePos);
 
 public:
+	void Use_Item(int SlotIndex);
 	void Swap_Item(int PickIndex, int DropIndex);
 	bool Add_Item(ITEMID Item, int Amount);
 	bool Replace_Item(int Index, int Amount);
@@ -66,10 +67,12 @@ private:
 	vector<class CItemSlot*> m_ItemSlots;
 	vector<class CItemIcon*> m_ItemIcons;
 	class CButtonUI* m_pSortButton;
-
+	map<ITEMID, pair<ITEMTYPE, int>> m_ItemTypes;
+	
 private:
 	HRESULT Ready_Components();
 	HRESULT Ready_Parts();
+	void Read_ItemData();
 
 public:
 	static CInventory* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

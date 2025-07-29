@@ -82,8 +82,6 @@ bool CUIObject::MouseOverButton(POINT pMouse)
 	}
 
 	return true;
-
-	return false;
 }
 
 

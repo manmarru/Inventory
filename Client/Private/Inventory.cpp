@@ -3,6 +3,8 @@
 #include "ItemSlot.h"
 #include "ItemIcon.h"
 #include "ButtonUI.h"
+#include <fstream>
+
 
 #include "GameInstance.h"
 
@@ -45,6 +47,8 @@ HRESULT CInventory::Initialize(void* pArg)
 
 	if (FAILED(Ready_Parts()))
 		return E_FAIL;
+
+	Read_ItemData();
 
 	return S_OK;
 }
@@ -143,7 +147,7 @@ void CInventory::Mouse_Input()
 {
 	POINT MousePos = m_pGameInstance->Get_MousePos();
 
-	if (m_pGameInstance->GetButtonUp(KeyType::LeftMouse) && m_iSelectedIndex != -1)
+	if (m_pGameInstance->GetButtonUp(KeyType::LeftMouse) && m_iSelectedIndex != -1) // 아이템 드래그
 	{
 		int SwapIndex = MouseCheck(MousePos);
 		if (SwapIndex != -1)
@@ -155,10 +159,15 @@ void CInventory::Mouse_Input()
 		m_iSelectedIndex = -1;
 	}
 
-
+	
 	if (false == MouseOverButton(MousePos))
 	{
 		return;
+	}
+
+	if(m_pSortButton->MouseOverButton(MousePos) && m_pGameInstance->GetButtonDown(KeyType::LeftMouse))
+	{
+		Sort_Items();
 	}
 
 	if (MousePos.y <= m_fY - InventorySizeY * 0.5f + 25)
@@ -174,6 +183,10 @@ void CInventory::Mouse_Input()
 	if (SelectedSlot == -1)
 		return;
 
+	if (m_pGameInstance->GetButton(KeyType::HMouse))
+	{
+		m_SortLock[SelectedSlot] = !m_SortLock[SelectedSlot];
+	}
 	if (m_pGameInstance->GetButtonDown(KeyType::RightMouse))
 	{
 		Replace_Item(SelectedSlot, 1);
@@ -197,9 +210,29 @@ int CInventory::MouseCheck(POINT MousePos)
 	return Result;
 }
 
+void CInventory::Use_Item(int SlotIndex)
+{
+	pair<ITEMTYPE, int> ItemData = m_ItemTypes[m_Items[SlotIndex]];
+	switch (ItemData.first)
+	{
+	case ITEM_NORMAL:
+		break;
+	case ITEM_BOX:
+		Add_Item((ITEMID)ItemData.second, 10);
+		break;
+	case ITEM_POTION:
+		break;
+	case ITEMTYPE_END:
+		break;
+	default:
+		break;
+	}
+}
+
 void CInventory::Swap_Item(int PickIndex, int DropIndex)
 {
 	swap(m_Items[PickIndex], m_Items[DropIndex]);
+	swap(m_SortLock[PickIndex], m_SortLock[DropIndex]);
 	Syncro_ItemSlot(PickIndex);
 	Syncro_ItemSlot(DropIndex);
 }
@@ -254,8 +287,8 @@ void CInventory::Sort_Items()
 			continue;
 		if (m_SortLock[i] == true)
 			continue;
-
 		Unlocked.push_back(m_Items[i]);
+		m_Items[i] = ITEM_NONE;
 	}
 
 	if (Unlocked.empty())
@@ -271,7 +304,11 @@ void CInventory::Sort_Items()
 		m_Items[i] = Unlocked[Count];
 		++Count;
 		if (Count == Unlocked.size())
-			return;
+			break;
+	}
+	for (int i = 0; i < ItemSlotLength; ++i)
+	{
+		Syncro_ItemSlot(i);
 	}
 }
 
@@ -338,6 +375,19 @@ HRESULT CInventory::Ready_Parts()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CInventory::Read_ItemData()
+{
+	ifstream LoadStream("../Bin/Resources/Data/ItemTypes.txt");
+	int Input[2];
+
+	for (int i = 0; i < ITEM_END; ++i)
+	{
+		LoadStream >> Input[0] >> Input[1];
+		m_ItemTypes[(ITEMID)i] = { (ITEMTYPE)Input[0], Input[1] };
+	}
+	
 }
 
 CInventory* CInventory::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
