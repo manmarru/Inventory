@@ -36,7 +36,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	bool MouseCheck(LPPOINT MousePos);
+	bool MouseCheck(POINT MousePos);
 
 public:
 	class CShader* m_pShaderCom = { nullptr };

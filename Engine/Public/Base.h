@@ -22,6 +22,9 @@ public:
 private:
 	unsigned int				m_iRefCnt = { 0 };
 
+protected:
+	bool						m_bClone = { false };
+
 public:
 	/* 생성관련된 함수는 필요없다. */
 

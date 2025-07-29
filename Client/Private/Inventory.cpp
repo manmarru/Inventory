@@ -15,6 +15,7 @@ CInventory::CInventory(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CInventory::CInventory(const CInventory& Prototype)
 	:CUIObject(Prototype)
 {
+	m_bClone = true;
 }
 
 HRESULT CInventory::Initialize_Prototype()
@@ -154,6 +155,12 @@ void CInventory::Mouse_Input()
 		m_iSelectedIndex = -1;
 	}
 
+
+	if (false == MouseOverButton(MousePos))
+	{
+		return;
+	}
+
 	if (MousePos.y <= m_fY - InventorySizeY * 0.5f + 25)
 	{
 		if(m_pGameInstance->GetButton(KeyType::LeftMouse))
@@ -162,12 +169,6 @@ void CInventory::Mouse_Input()
 			m_fY += m_pGameInstance->Get_DIMouseMove(DIMM_Y);
 		}
 	}
-
-	if (false == MouseOverButton(MousePos))
-	{
-		return;
-	}
-
 
 	int SelectedSlot = MouseCheck(MousePos);
 	if (SelectedSlot == -1)
@@ -189,24 +190,11 @@ int CInventory::MouseCheck(POINT MousePos)
 	int Result{ -1 };
 	for (int Index = 0; Index < ItemSlotLength; ++Index)
 	{
-		if (m_ItemSlots[Index]->MouseCheck(&MousePos) == true)
+		if (m_ItemSlots[Index]->MouseCheck(MousePos) == true)
 			Result = Index;
 	}
 
 	return Result;
-}
-
-bool CInventory::MouseOverButton(POINT pMouse)
-{
-	if (pMouse.x < m_fX - InventorySizeX * 0.5f
-		|| pMouse.x > m_fX + InventorySizeX * 0.5f
-		|| pMouse.y < m_fY - InventorySizeY * 0.5f
-		|| pMouse.y > m_fY + InventorySizeY * 0.5f)
-	{
-		return false;
-	}
-
-	return true;
 }
 
 void CInventory::Swap_Item(int PickIndex, int DropIndex)
@@ -339,13 +327,13 @@ HRESULT CInventory::Ready_Parts()
 	}
 
 	CButtonUI::BUTTONUI_DESC ButtonDesc;
-	ButtonDesc.fOffsetX = -180;
+	ButtonDesc.fOffsetX = -185;
 	ButtonDesc.fOffsetY = -205;
 	ButtonDesc.fSizeX = 24;
 	ButtonDesc.fSizeY = 24;
 	ButtonDesc.fX = 0;
 	ButtonDesc.fY = 0;
-	ButtonDesc.TextureTag = TEXT("Prototype_Component_Texture_LURD");//TEXT("Prototype_Component_Texture_ButtonUI_Sort");
+	ButtonDesc.TextureTag = TEXT("Prototype_Component_Texture_ButtonUI_Sort");//TEXT("Prototype_Component_Texture_ButtonUI_Sort");
 	if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_pSortButton, GameTag_ButtonUI, &ButtonDesc)))
 		return E_FAIL;
 
@@ -391,6 +379,8 @@ void CInventory::Free()
 	{
 		Safe_Release(pItemIcon);
 	}
+	if(m_bClone == true)
+		Safe_Release(m_pSortButton);
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);

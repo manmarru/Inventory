@@ -27,6 +27,9 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	bool MouseOverButton(POINT pMouse);
+
 protected:
 	_float				m_fX{}, m_fY{}, m_fSizeX{}, m_fSizeY{};
 	_float4x4			m_ViewMatrix{}, m_ProjMatrix{};

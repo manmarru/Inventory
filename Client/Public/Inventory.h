@@ -45,7 +45,6 @@ public:
 	void Key_Input();
 	void Mouse_Input();
 	int MouseCheck(POINT MousePos);
-	bool MouseOverButton(POINT pMouse);
 
 public:
 	void Swap_Item(int PickIndex, int DropIndex);

@@ -82,12 +82,9 @@ HRESULT CItemSlot::Render()
 	return S_OK;
 }
 
-bool CItemSlot::MouseCheck(LPPOINT MousePos)
+bool CItemSlot::MouseCheck(POINT MousePos)
 {
-	if (MousePos->x < m_fX - ItemSlotSize * 0.5f
-		|| MousePos->x > m_fX + ItemSlotSize * 0.5f
-		|| MousePos->y < m_fY - ItemSlotSize * 0.5f
-		|| MousePos->y > m_fY + ItemSlotSize * 0.5f)
+	if (false == MouseOverButton(MousePos))
 	{
 		m_iRenderTexture = 0;
 		return false;

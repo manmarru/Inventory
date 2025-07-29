@@ -71,6 +71,21 @@ HRESULT CUIObject::Render()
 	return S_OK;
 }
 
+bool CUIObject::MouseOverButton(POINT pMouse)
+{
+	if (pMouse.x < m_fX - m_fSizeX * 0.5f
+		|| pMouse.x > m_fX + m_fSizeX * 0.5f
+		|| pMouse.y < m_fY - m_fSizeY * 0.5f
+		|| pMouse.y > m_fY + m_fSizeY * 0.5f)
+	{
+		return false;
+	}
+
+	return true;
+
+	return false;
+}
+
 
 void CUIObject::Free()
 {
