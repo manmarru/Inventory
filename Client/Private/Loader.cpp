@@ -174,6 +174,11 @@ HRESULT CLoader::Ready_Resources_For_Inventory()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/SortButton.png"), 1))))
 		return E_FAIL;
 
+	/* For. Prototype_Component_Texture_ButtonUI_PetSlot */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_ButtonUI_PetSlot"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/PetSlot.png"), 1))))
+		return E_FAIL;
+
 	//Prototype
 
 	/* For. Prototype_GameObject_Inventory */

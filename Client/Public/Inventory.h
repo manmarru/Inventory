@@ -1,9 +1,13 @@
 #pragma once
 #include "Client_Defines.h"
 #include "UIObject.h"
-#define ItemSlotLength 100
-#define ItemSlotLengthY 10
-#define ItemSlotLengthX 10
+#define PlayerItemSlotLength 100
+#define PlayerItemSlotLengthY 10
+#define PlayerItemSlotLengthX 10
+
+#define PetItemSlotLength 30
+#define PetItemSlotLengthY 3
+#define PetItemSlotLengthX 10
 
 #define InventorySizeX 410
 #define InventorySizeY 500
@@ -42,6 +46,7 @@ public:
 
 public:
 	void Active() { m_bActive = true; }
+	void PetActive();
 	void Key_Input();
 	void Mouse_Input();
 	int MouseCheck(POINT MousePos);
@@ -58,17 +63,31 @@ public:
 private:
 	int m_iSelectedIndex{ -1 };
 	bool m_bFontRender{ false };
+	bool m_bPetActive{ false };
 
 private:
-	vector<ITEMID> m_Items;
-	vector<char> m_SortLock;
-	unordered_map<ITEMID, int> m_ItemSize;
+	vector<ITEMID>* m_Items;
+	vector<char>* m_SortLock;
+	vector<class CItemSlot*>* m_ItemSlots;
+	vector<class CItemIcon*>* m_ItemIcons;
 
 private:
-	vector<class CItemSlot*> m_ItemSlots;
-	vector<class CItemIcon*> m_ItemIcons;
 	class CButtonUI* m_pSortButton;
+	class CButtonUI* m_pPetSlotButton;
+	unordered_map<ITEMID, int> m_ItemSize;
 	map<ITEMID, pair<ITEMTYPE, int>> m_ItemTypes;
+
+private:
+	vector<ITEMID> m_PlayerItems;
+	vector<char> m_PlayerSortLock;
+	vector<class CItemSlot*> m_PlayerItemSlots;
+	vector<class CItemIcon*> m_PlayerItemIcons;
+
+private:
+	vector<ITEMID> m_PetItems;
+	vector<char> m_PetSortLock;
+	vector<class CItemSlot*> m_PetItemSlots;
+	vector<class CItemIcon*> m_PetItemIcons;
 	
 private:
 	HRESULT Ready_Components();

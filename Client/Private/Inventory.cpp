@@ -36,9 +36,14 @@ HRESULT CInventory::Initialize(void* pArg)
 	Desc.fSpeedPerSec = 0.f;
 	Desc.fRotationPerSec = XMConvertToRadians(90.f);
 
-	m_Items.resize(ItemSlotLength, ITEM_NONE);
-	m_SortLock.resize(ItemSlotLength, false);
+	m_PlayerItems.resize(PlayerItemSlotLength, ITEM_NONE);
+	m_PlayerSortLock.resize(PlayerItemSlotLength, false);
 
+	m_PetItems.resize(PetItemSlotLength, ITEM_NONE);
+	m_PetSortLock.resize(PetItemSlotLength, false);
+
+	m_Items = &m_PlayerItems;
+	m_SortLock = &m_PlayerSortLock;
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
@@ -85,20 +90,27 @@ void CInventory::Late_Update(_float fTimeDelta)
 		CItemIcon::s_fPivotY = m_fY;
 		CItemIcon::s_fPivotX = m_fX;
 		m_pSortButton->Set_Pivot(m_fX, m_fY);
-		for (int i = 0; i < ItemSlotLength; ++i)
+		m_pPetSlotButton->Set_Pivot(m_fX, m_fY);
+
+		vector<CItemSlot*>& ItemSlots = *m_ItemSlots;
+		vector<CItemIcon*>& ItemIcons = *m_ItemIcons;
+
+		int Length = m_bPetActive ? PetItemSlotLength : PlayerItemSlotLength;
+		for (int i = 0; i < Length; ++i)
 		{
-			m_ItemSlots[i]->Late_Update(fTimeDelta);
-			m_ItemIcons[i]->Late_Update(fTimeDelta);
-			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)m_ItemSlots[i]);
-			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)m_ItemIcons[i]);
+			ItemSlots[i]->Late_Update(fTimeDelta);
+			ItemIcons[i]->Late_Update(fTimeDelta);
+			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)ItemSlots[i]);
+			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)ItemIcons[i]);
 		}
 
 		if (m_iSelectedIndex != -1)
 		{
-			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)(m_ItemIcons[m_iSelectedIndex]));
+			m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)((*m_ItemIcons)[m_iSelectedIndex]));
 		}
 
 		m_pSortButton->Late_Update(fTimeDelta);
+		m_pPetSlotButton->Late_Update(fTimeDelta);
 		m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, (CGameObject*)(m_pSortButton));
 		m_pGameInstance->Add_RenderObject(CRenderer::RG_UI, this);
 	}
@@ -130,12 +142,15 @@ HRESULT CInventory::Render()
 	}
 	else
 	{
-		for(int i = 0; i < ItemSlotLength; ++i)
+		vector<CItemIcon*>& ItemIcons = *m_ItemIcons;
+		vector<ITEMID>& Items = *m_Items;
+		int Length = m_bPetActive ? PetItemSlotLength : PlayerItemSlotLength;
+		for(int i = 0; i < Length; ++i)
 		{
-			int ItemSize = m_ItemSize[m_Items[i]];
+			int ItemSize = m_ItemSize[Items[i]];
 			if (ItemSize == 0)
 				continue;
-			CItemIcon* Icon = m_ItemIcons[i];
+			CItemIcon* Icon = ItemIcons[i];
 			
 			wstring Amount = to_wstring(ItemSize);
 			m_pGameInstance->Render_Text(TEXT("Font_NeoDun"), Amount.c_str(), XMVectorSet(Icon->Get_fX(), Icon->Get_fY(), 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.5f);
@@ -146,6 +161,25 @@ HRESULT CInventory::Render()
 	}
 
 	return E_FAIL;
+}
+
+void CInventory::PetActive()
+{
+	m_bPetActive = !m_bPetActive;
+	if (true == m_bPetActive)
+	{
+		m_Items = &m_PetItems;
+		m_SortLock = &m_PetSortLock;
+		m_ItemIcons = &m_PetItemIcons;
+		m_ItemSlots = &m_PetItemSlots;
+	}
+	else
+	{
+		m_Items = &m_PlayerItems;
+		m_SortLock = &m_PlayerSortLock;
+		m_ItemIcons = &m_PlayerItemIcons;
+		m_ItemSlots = &m_PlayerItemSlots;
+	}
 }
 
 void CInventory::Key_Input()
@@ -215,7 +249,7 @@ void CInventory::Mouse_Input()
 			Swap_Item(SwapIndex, m_iSelectedIndex);
 		}
 
-		m_ItemIcons[m_iSelectedIndex]->Set_StickToMouse(false);
+		(*m_ItemIcons)[m_iSelectedIndex]->Set_StickToMouse(false);
 		m_iSelectedIndex = -1;
 	}
 
@@ -228,6 +262,10 @@ void CInventory::Mouse_Input()
 	if(m_pSortButton->MouseOverButton(MousePos) && m_pGameInstance->GetButtonDown(KeyType::LeftMouse))
 	{
 		Sort_Items();
+	}
+	if (m_pPetSlotButton->MouseOverButton(MousePos) && m_pGameInstance->GetButtonDown(KeyType::LeftMouse))
+	{
+		PetActive();
 	}
 
 	if (MousePos.y <= m_fY - InventorySizeY * 0.5f + 25)
@@ -245,26 +283,27 @@ void CInventory::Mouse_Input()
 
 	if (m_pGameInstance->GetButtonDown(KeyType::HMouse))
 	{
-		m_SortLock[SelectedSlot] = !m_SortLock[SelectedSlot];
-		m_ItemSlots[SelectedSlot]->Sortlock();
+		(*m_SortLock)[SelectedSlot] = !(*m_SortLock)[SelectedSlot];
+		(*m_ItemSlots)[SelectedSlot]->Sortlock();
 	}
 	if (m_pGameInstance->GetButtonDown(KeyType::RightMouse))
 	{
-		Replace_Item(SelectedSlot, 1);
+		Use_Item(SelectedSlot);
 	}
 	else if (m_pGameInstance->GetButtonDown(KeyType::LeftMouse))
 	{
 		m_iSelectedIndex = SelectedSlot;
-		m_ItemIcons[SelectedSlot]->Set_StickToMouse(true);
+		(*m_ItemIcons)[SelectedSlot]->Set_StickToMouse(true);
 	}
 }
 
 int CInventory::MouseCheck(POINT MousePos)
 {
 	int Result{ -1 };
-	for (int Index = 0; Index < ItemSlotLength; ++Index)
+	int Length = m_bPetActive ? PetItemSlotLength : PlayerItemSlotLength;
+	for (int Index = 0; Index < Length; ++Index)
 	{
-		if (m_ItemSlots[Index]->MouseCheck(MousePos) == true)
+		if ((*m_ItemSlots)[Index]->MouseCheck(MousePos) == true)
 			Result = Index;
 	}
 
@@ -273,15 +312,17 @@ int CInventory::MouseCheck(POINT MousePos)
 
 void CInventory::Use_Item(int SlotIndex)
 {
-	pair<ITEMTYPE, int> ItemData = m_ItemTypes[m_Items[SlotIndex]];
+	pair<ITEMTYPE, int> ItemData = m_ItemTypes[(*m_Items)[SlotIndex]];
 	switch (ItemData.first)
 	{
 	case ITEM_NORMAL:
 		break;
 	case ITEM_BOX:
 		Add_Item((ITEMID)ItemData.second, 10);
+		Replace_Item(SlotIndex, 1);
 		break;
 	case ITEM_POTION:
+		Replace_Item(SlotIndex, 1);
 		break;
 	case ITEMTYPE_END:
 		break;
@@ -292,11 +333,11 @@ void CInventory::Use_Item(int SlotIndex)
 
 void CInventory::Swap_Item(int PickIndex, int DropIndex)
 {
-	swap(m_Items[PickIndex], m_Items[DropIndex]);
-	swap(m_SortLock[PickIndex], m_SortLock[DropIndex]);
+	swap((*m_Items)[PickIndex], (*m_Items)[DropIndex]);
+	swap((*m_SortLock)[PickIndex], (*m_SortLock)[DropIndex]);
 	Syncro_ItemSlot(PickIndex);
 	Syncro_ItemSlot(DropIndex);
-	m_ItemSlots[PickIndex]->SwapData(m_ItemSlots[DropIndex]);
+	(*m_ItemSlots)[PickIndex]->SwapData((*m_ItemSlots)[DropIndex]);
 }
 
 bool CInventory::Add_Item(ITEMID Item, int Amount)
@@ -307,12 +348,14 @@ bool CInventory::Add_Item(ITEMID Item, int Amount)
 		return true;
 	}
 
-	for (int i = 0; i < ItemSlotLength; ++i)
+	vector<ITEMID>& Items = *m_Items;
+	int Length = m_bPetActive ? PetItemSlotLength : PlayerItemSlotLength;
+	for (int i = 0; i < Length; ++i)
 	{
-		if (m_Items[i] == ITEM_NONE)
+		if (Items[i] == ITEM_NONE)
 		{
-			m_Items[i] = Item;
-			m_ItemIcons[i]->Set_ItemIcon(Item);
+			Items[i] = Item;
+			(*m_ItemIcons)[i]->Set_ItemIcon(Item);
 			++m_ItemSize[Item];
 			return true;
 		}
@@ -323,7 +366,7 @@ bool CInventory::Add_Item(ITEMID Item, int Amount)
 
 bool CInventory::Replace_Item(int Index, int Amount)
 {
-	ITEMID PickItem = m_Items[Index];
+	ITEMID PickItem = (*m_Items)[Index];
 	if (m_ItemSize[PickItem] < Amount)
 	{
 		return false;
@@ -332,8 +375,8 @@ bool CInventory::Replace_Item(int Index, int Amount)
 	m_ItemSize[PickItem] -= Amount;
 	if (m_ItemSize[PickItem] == 0)
 	{
-		m_Items[Index] = ITEM_NONE;
-		m_ItemIcons[Index]->Set_ItemIcon(ITEM_NONE);
+		(*m_Items)[Index] = ITEM_NONE;
+		(*m_ItemIcons)[Index]->Set_ItemIcon(ITEM_NONE);		
 	}
 
 	return true;
@@ -343,14 +386,17 @@ void CInventory::Sort_Items()
 {
 	vector<ITEMID> Unlocked;
 
-	for (int i = 0; i < ItemSlotLength; ++i)
+	vector<ITEMID>& Items = *m_Items;
+	vector<char>& SortLock = *m_SortLock;
+	int Length = m_bPetActive ? PetItemSlotLength : PlayerItemSlotLength;
+	for (int i = 0; i < Length; ++i)
 	{
-		if (ITEM_NONE == m_Items[i])
+		if (ITEM_NONE == Items[i])
 			continue;
-		if (m_SortLock[i] == true)
+		if (SortLock[i] == true)
 			continue;
-		Unlocked.push_back(m_Items[i]);
-		m_Items[i] = ITEM_NONE;
+		Unlocked.push_back(Items[i]);
+		Items[i] = ITEM_NONE;
 	}
 
 	if (Unlocked.empty())
@@ -359,16 +405,16 @@ void CInventory::Sort_Items()
 	sort(Unlocked.begin(), Unlocked.end());
 
 	int Count = 0;
-	for (int i = 0; i < ItemSlotLength; ++i)
+	for (int i = 0; i < Length; ++i)
 	{
-		if (true == m_SortLock[i])
+		if (true == SortLock[i])
 			continue;
-		m_Items[i] = Unlocked[Count];
+		Items[i] = Unlocked[Count];
 		++Count;
 		if (Count == Unlocked.size())
 			break;
 	}
-	for (int i = 0; i < ItemSlotLength; ++i)
+	for (int i = 0; i < Length; ++i)
 	{
 		Syncro_ItemSlot(i);
 	}
@@ -376,14 +422,13 @@ void CInventory::Sort_Items()
 
 void CInventory::Set_ItemIcon(ITEMID Item, int Index, int Amount)
 {
-	m_Items[Index] = Item;
-	m_ItemIcons[Index]->Set_ItemIcon(Item);
+	(*m_Items)[Index] = Item;
+	(*m_ItemIcons)[Index]->Set_ItemIcon(Item);
 }
 
 void CInventory::Syncro_ItemSlot(int SlotIndex)
 {
-	m_ItemIcons[SlotIndex]->Set_ItemIcon(m_Items[SlotIndex]);
-	
+	(*m_ItemIcons)[SlotIndex]->Set_ItemIcon((*m_Items)[SlotIndex]);
 }
 
 HRESULT CInventory::Ready_Components()
@@ -410,21 +455,41 @@ HRESULT CInventory::Ready_Components()
 HRESULT CInventory::Ready_Parts()
 {
 	CItemSlot::ITEMSLOT_DESC Desc;
-	m_ItemSlots.resize(ItemSlotLength, nullptr);
-	m_ItemIcons.resize(ItemSlotLength, nullptr);
-	for (int y = 0; y < ItemSlotLengthY; ++y)
+	//Pleyer
+	m_PlayerItemSlots.resize(PlayerItemSlotLength, nullptr);
+	m_PlayerItemIcons.resize(PlayerItemSlotLength, nullptr);
+	for (int y = 0; y < PlayerItemSlotLengthY; ++y)
 	{
-		for (int x = 0; x < ItemSlotLengthX; ++x)
+		for (int x = 0; x < PlayerItemSlotLengthX; ++x)
 		{
 			Desc.fOffsetY = ItemSlotSize * y - 165;
 			Desc.fOffsetX = ItemSlotSize * x - 177;
-			int Index = y * ItemSlotLengthX + x;
-			if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_ItemSlots[Index], GameTag_ItemSlot, &Desc)))
+			int Index = y * PlayerItemSlotLengthX + x;
+			if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_PlayerItemSlots[Index], GameTag_ItemSlot, &Desc)))
 				return E_FAIL;
-			if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_ItemIcons[Index], GameTag_ItemIcon, &Desc)))
+			if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_PlayerItemIcons[Index], GameTag_ItemIcon, &Desc)))
 				return E_FAIL;
 		}
 	}
+	//Pet
+	m_PetItemSlots.resize(PetItemSlotLength, nullptr);
+	m_PetItemIcons.resize(PetItemSlotLength, nullptr);
+	for (int y = 0; y < PetItemSlotLengthY; ++y)
+	{
+		for (int x = 0; x < PlayerItemSlotLengthX; ++x)
+		{
+			Desc.fOffsetY = ItemSlotSize * y - 165;
+			Desc.fOffsetX = ItemSlotSize * x - 177;
+			int Index = y * PlayerItemSlotLengthX + x;
+			if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_PetItemSlots[Index], GameTag_ItemSlot, &Desc)))
+				return E_FAIL;
+			if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_PetItemIcons[Index], GameTag_ItemIcon, &Desc)))
+				return E_FAIL;
+		}
+	}
+
+	m_ItemSlots = &m_PlayerItemSlots;
+	m_ItemIcons = &m_PlayerItemIcons;
 
 	CButtonUI::BUTTONUI_DESC ButtonDesc;
 	ButtonDesc.fOffsetX = -185;
@@ -433,8 +498,18 @@ HRESULT CInventory::Ready_Parts()
 	ButtonDesc.fSizeY = 24;
 	ButtonDesc.fX = 0;
 	ButtonDesc.fY = 0;
-	ButtonDesc.TextureTag = TEXT("Prototype_Component_Texture_ButtonUI_Sort");//TEXT("Prototype_Component_Texture_ButtonUI_Sort");
+	ButtonDesc.TextureTag = TEXT("Prototype_Component_Texture_ButtonUI_Sort");
 	if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_pSortButton, GameTag_ButtonUI, &ButtonDesc)))
+		return E_FAIL;
+
+	ButtonDesc.fOffsetX = -95.f;
+	ButtonDesc.fOffsetY = -206.f;
+	ButtonDesc.fSizeX = 43.f;
+	ButtonDesc.fSizeY = 28.f;
+	ButtonDesc.fX = 0;
+	ButtonDesc.fY = 0;
+	ButtonDesc.TextureTag = TEXT("Prototype_Component_Texture_ButtonUI_PetSlot");
+	if (FAILED(m_pGameInstance->Clone_Prototype((CGameObject**)&m_pPetSlotButton, GameTag_ButtonUI, &ButtonDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -449,8 +524,7 @@ void CInventory::Read_ItemData()
 	{
 		LoadStream >> Input[0] >> Input[1];
 		m_ItemTypes[(ITEMID)i] = { (ITEMTYPE)Input[0], Input[1] };
-	}
-	
+	}	
 }
 
 CInventory* CInventory::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -483,17 +557,26 @@ void CInventory::Free()
 {
 	__super::Free();
 
-	
-	for(CItemSlot* pItemSlot : m_ItemSlots)
+	if (m_bClone == true)
 	{
-		Safe_Release(pItemSlot);
-	}
-	for (CItemIcon* pItemIcon : m_ItemIcons)
-	{
-		Safe_Release(pItemIcon);
-	}
-	if(m_bClone == true)
+		for (CItemSlot* pItemSlot : m_PlayerItemSlots)
+		{
+			Safe_Release(pItemSlot);
+		}
+		for (CItemSlot* pItemSlot : m_PetItemSlots)
+		{
+			Safe_Release(pItemSlot);
+		}
+		for (CItemIcon* pItemIcon : m_PlayerItemIcons)
+		{
+			Safe_Release(pItemIcon);
+		}
+		for (CItemIcon* pItemIcon : m_PetItemIcons)
+		{
+			Safe_Release(pItemIcon);
+		}
 		Safe_Release(m_pSortButton);
+	}
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
