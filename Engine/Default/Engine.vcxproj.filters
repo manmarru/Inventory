@@ -100,6 +100,9 @@
     <Filter Include="01.Utility\08.Font\Manager">
       <UniqueIdentifier>{9e1eeaa2-2981-48fc-a0c5-36590f549ca5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\09.SoundManager">
+      <UniqueIdentifier>{7dbc8457-9cce-45b4-9004-29386333fef4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -188,6 +191,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Font_Manager.cpp">
       <Filter>01.Utility\08.Font\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SoundManager.cpp">
+      <Filter>01.Utility\09.SoundManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -289,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Font_Manager.h">
       <Filter>01.Utility\08.Font\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SoundManager.h">
+      <Filter>01.Utility\09.SoundManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

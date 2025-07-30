@@ -89,6 +89,23 @@ public:
 	HRESULT Render_Text(const _wstring& strFontTag, const _tchar* pText, _fvector vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f), _float fRadian = 0.f, _fvector vPivot = XMVectorSet(0.f, 0.f, 0.f, 1.f), _float fScale = 1.f);
 #pragma endregion
 
+#pragma region SOUND_MANAGER
+public:
+	void		Update_Sound();
+	HRESULT		PlayDefault(TCHAR* _TagSound, _int _Channel, _float _fVloume, _bool _bLoop);
+	HRESULT		PlayBGM(const TCHAR* _TagSound, _float _fVolume, _bool _bLoop);
+	HRESULT		Play3D(TCHAR* _TagSound, _int _Channel, _float _fVolume, _float3 _vPos, _bool _bLoop);
+	HRESULT		Play_NonStack(TCHAR* _TagSound, _int _Channel, _float _fVolume, _bool _bLoop);
+	void		MuteAll();
+	void		StopSound(int _iChannel);
+	void		StopSoundALL();
+	void		Set_ChannelVolume(int _Channel, _float _fVolume);
+	HRESULT		Set_SoundPos(_int _iChannel, _float3 _vPos);
+	HRESULT		Add_Sound(const char* _fullpath, const TCHAR* _filename, const TCHAR* _path);
+	HRESULT		Load_Sound(const char* _folderName);
+	HRESULT		Set_Listener(_float3 _vPos, _float3 _vLook, _float3 _vUp); //¤¿
+#pragma endregion
+
 private:
 	class CGraphic_Device*			m_pGraphic_Device = { nullptr };
 	class CInput_Device*			m_pInput_Device = { nullptr };
@@ -101,6 +118,7 @@ private:
 	class CUIManager*				m_pUIManager = { nullptr };
 	class KeyMgr*					m_pKeyMgr = { nullptr };
 	class CFont_Manager*			m_pFont_Manager = { nullptr };
+	class CSoundManager*			m_pSound_Manager = { nullptr };
 
 public:	
 	void Release_Engine();

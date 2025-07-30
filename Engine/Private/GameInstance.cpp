@@ -6,6 +6,7 @@
 #include "Input_Device.h"
 #include "UIManager.h"
 #include "Font_Manager.h"
+#include "SoundManager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -32,6 +33,11 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	m_pPipeLine = CPipeLine::Create();
 	if (nullptr == m_pPipeLine)
 		return E_FAIL;
+
+	m_pSound_Manager = CSoundManager::Create();
+	if (nullptr == m_pSound_Manager)
+		return E_FAIL;
+	m_pSound_Manager->Initialize();
 
 	/* 입력장치를 초기화한다. */
 	m_pKeyMgr = KeyMgr::Create();
@@ -84,6 +90,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pObject_Manager->Late_Update(fTimeDelta);
 	
 	m_pLevel_Manager->Update(fTimeDelta);		
+
+	m_pSound_Manager->Update();
 }
 
 HRESULT CGameInstance::Draw_Engine()
@@ -278,6 +286,75 @@ HRESULT CGameInstance::Render_Text(const _wstring& strFontTag, const _tchar* pTe
 
 #pragma endregion
 
+#pragma region SOUND_MANAGER
+
+void CGameInstance::Update_Sound()
+{
+	m_pSound_Manager->Update();
+}
+
+HRESULT CGameInstance::PlayDefault(TCHAR* _TagSound, _int _Channel, _float _fVloume, _bool _bLoop)
+{
+	return m_pSound_Manager->PlayDefault(_TagSound, CSoundManager::SOUND_CHANNEL(_Channel), _fVloume, _bLoop);
+}
+
+HRESULT CGameInstance::PlayBGM(const TCHAR* _TagSound, _float _fVolume, _bool _bLoop)
+{
+	return m_pSound_Manager->PlayBGM(_TagSound, _fVolume, _bLoop);
+}
+
+HRESULT CGameInstance::Play3D(TCHAR* _TagSound, _int _Channel, _float _fVolume, _float3 _vPos, _bool _bLoop)
+{
+	return m_pSound_Manager->Play3D(_TagSound, _Channel, _fVolume, _vPos, _bLoop);
+}
+
+HRESULT CGameInstance::Play_NonStack(TCHAR* _TagSound, _int _Channel, _float _fVolume, _bool _bLoop)
+{
+	return m_pSound_Manager->Play_NonStack(_TagSound, _Channel, _fVolume, _bLoop);
+}
+
+void CGameInstance::MuteAll()
+{
+	m_pSound_Manager->MuteAll();
+}
+
+void CGameInstance::StopSound(int _iChannel)
+{
+	m_pSound_Manager->StopSound(CSoundManager::SOUND_CHANNEL(_iChannel));
+}
+
+void CGameInstance::StopSoundALL()
+{
+	m_pSound_Manager->StopSoundALL();
+}
+
+void CGameInstance::Set_ChannelVolume(int _Channel, _float _fVolume)
+{
+	m_pSound_Manager->SetChannelVolume(CSoundManager::SOUND_CHANNEL(_Channel), _fVolume);
+}
+
+HRESULT CGameInstance::Set_SoundPos(_int _iChannel, _float3 _vPos)
+{
+	return m_pSound_Manager->Set_SoundPos(_iChannel, _vPos);
+}
+
+HRESULT CGameInstance::Add_Sound(const char* _fullpath, const TCHAR* _filename, const TCHAR* _path)
+{
+	return m_pSound_Manager->Add_Sound(_fullpath, _filename, _path);
+}
+
+HRESULT CGameInstance::Load_Sound(const char* _folderName)
+{
+	return m_pSound_Manager->Load_Sound(_folderName);
+}
+
+HRESULT CGameInstance::Set_Listener(_float3 _vPos, _float3 _vLook, _float3 _vUp)
+{
+	return m_pSound_Manager->Set_Listener(_vPos, _vLook, _vUp);
+}
+
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {	
 	Safe_Release(m_pFont_Manager);
@@ -291,6 +368,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pKeyMgr);
+	Safe_Release(m_pSound_Manager);
 
 	CGameInstance::Get_Instance()->Destroy_Instance();	
 }
