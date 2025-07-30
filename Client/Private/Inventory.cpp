@@ -72,6 +72,7 @@ void CInventory::Update(_float fTimeDelta)
 	{
 		if (m_pGameInstance->GetButtonDown(KeyType::I))
 		{
+			m_pGameInstance->PlayDefault(TEXT("Open.wav"), 1, 1.f, false);
 			m_bActive = true;
 		}
 	}
@@ -187,6 +188,10 @@ void CInventory::Key_Input()
 	if (m_pGameInstance->GetButtonDown(KeyType::I))
 	{
 		m_bActive = false;
+		if (m_bActive == false)
+		{
+			m_pGameInstance->PlayDefault(TEXT("Close.wav"), 1, 1.f, false);
+		}
 	}
 
 	if (m_pGameInstance->GetButtonDown(KeyType::KEY_1))
@@ -233,13 +238,41 @@ void CInventory::Key_Input()
 	{
 		Add_Item(ITEM_POTION_AWAKEN, 1);
 	}
-
-	
 }
 
 void CInventory::Mouse_Input()
 {
 	POINT MousePos = m_pGameInstance->Get_MousePos();
+
+	if (m_pPetSlotButton->MouseOverButton(MousePos) && m_pGameInstance->GetButtonUp(KeyType::LeftMouse) && m_iSelectedIndex != -1)
+	{
+		if (m_bPetActive == false)
+		{
+			for (int i = 0; i < PetItemSlotLength; ++i)
+			{
+				if (m_PetItems[i] == ITEM_NONE)
+				{
+					m_PetItems[i] = (*m_Items)[m_iSelectedIndex];
+					(m_PetItemIcons)[i]->Set_ItemIcon(m_PetItems[i]);
+					(*m_Items)[m_iSelectedIndex] = ITEM_NONE;
+					(*m_ItemIcons)[m_iSelectedIndex]->Set_ItemIcon(ITEM_NONE);
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < PlayerItemSlotLength; ++i)
+			{
+				if (m_PlayerItems[i] == ITEM_NONE)
+				{
+					m_PlayerItems[i] = (*m_Items)[m_iSelectedIndex];
+					m_PlayerItemIcons[i]->Set_ItemIcon(m_PlayerItems[i]);
+					(*m_Items)[m_iSelectedIndex] = ITEM_NONE;
+					(*m_ItemIcons)[m_iSelectedIndex]->Set_ItemIcon(ITEM_NONE);
+				}
+			}
+		}
+	}
 
 	if (m_pGameInstance->GetButtonUp(KeyType::LeftMouse) && m_iSelectedIndex != -1) // 아이템 드래그
 	{
@@ -252,7 +285,6 @@ void CInventory::Mouse_Input()
 		(*m_ItemIcons)[m_iSelectedIndex]->Set_StickToMouse(false);
 		m_iSelectedIndex = -1;
 	}
-
 	
 	if (false == MouseOverButton(MousePos))
 	{
@@ -262,9 +294,11 @@ void CInventory::Mouse_Input()
 	if(m_pSortButton->MouseOverButton(MousePos) && m_pGameInstance->GetButtonDown(KeyType::LeftMouse))
 	{
 		Sort_Items();
+		m_pGameInstance->PlayDefault(TEXT("Button_Select.wav"), 1, 1.f, false);
 	}
 	if (m_pPetSlotButton->MouseOverButton(MousePos) && m_pGameInstance->GetButtonDown(KeyType::LeftMouse))
 	{
+		m_pGameInstance->PlayDefault(TEXT("Button_Select.wav"), 1, 1.f, false);
 		PetActive();
 	}
 
@@ -280,6 +314,7 @@ void CInventory::Mouse_Input()
 	int SelectedSlot = MouseCheck(MousePos);
 	if (SelectedSlot == -1)
 		return;
+
 
 	if (m_pGameInstance->GetButtonDown(KeyType::HMouse))
 	{
@@ -316,13 +351,16 @@ void CInventory::Use_Item(int SlotIndex)
 	switch (ItemData.first)
 	{
 	case ITEM_NORMAL:
+		m_pGameInstance->PlayDefault(TEXT("Incorrect.wav"), 1, 1.f, false);
 		break;
 	case ITEM_BOX:
 		Add_Item((ITEMID)ItemData.second, 10);
 		Replace_Item(SlotIndex, 1);
+		m_pGameInstance->PlayDefault(TEXT("BoxOpen.wav"), 1, 1.f, false);
 		break;
 	case ITEM_POTION:
-		Replace_Item(SlotIndex, 1);
+		//Replace_Item(SlotIndex, 1);
+		m_pGameInstance->PlayDefault(TEXT("Incorrect.wav"), 1, 1.f, false);
 		break;
 	case ITEMTYPE_END:
 		break;
@@ -576,6 +614,7 @@ void CInventory::Free()
 			Safe_Release(pItemIcon);
 		}
 		Safe_Release(m_pSortButton);
+		Safe_Release(m_pPetSlotButton);
 	}
 
 	Safe_Release(m_pShaderCom);

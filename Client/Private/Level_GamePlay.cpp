@@ -35,8 +35,8 @@ HRESULT CLevel_GamePlay::Initialize()
 void CLevel_GamePlay::Update(_float fTimeDelta) 
 {
 #ifdef _DEBUG
-	m_pTestObj->Update(fTimeDelta);
-	m_pTestObj->Late_Update(fTimeDelta);
+	//m_pTestObj->Update(fTimeDelta);
+	//m_pTestObj->Late_Update(fTimeDelta);
 #endif
 }
 
@@ -90,7 +90,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI()
 #ifdef _DEBUG
 HRESULT CLevel_GamePlay::Ready_Test()
 {
-	m_pTestObj = CLURD_Test::Create(m_pDevice, m_pContext);
+	//m_pTestObj = CLURD_Test::Create(m_pDevice, m_pContext);
 	return S_OK;
 }
 #endif // _DEBUG
@@ -111,7 +111,7 @@ CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceCon
 void CLevel_GamePlay::Free()
 {
 #ifdef _DEBUG
-	Safe_Release(m_pTestObj);
+	//Safe_Release(m_pTestObj);
 #endif // _DEBUG
 
 	__super::Free();

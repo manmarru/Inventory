@@ -91,6 +91,8 @@ bool CItemSlot::MouseCheck(POINT MousePos)
 			m_iRenderTexture = 0;
 			return false;
 		}
+		if(m_iRenderTexture != 1)
+			m_pGameInstance->PlayDefault(TEXT("MouseOver.wav"), 1, 0.1f, false);
 		m_iRenderTexture = 1;
 	}
 	else

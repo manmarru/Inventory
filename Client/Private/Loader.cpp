@@ -179,6 +179,9 @@ HRESULT CLoader::Ready_Resources_For_Inventory()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/PetSlot.png"), 1))))
 		return E_FAIL;
 
+	//Sound
+	m_pGameInstance->Load_Sound("");
+
 	//Prototype
 
 	/* For. Prototype_GameObject_Inventory */

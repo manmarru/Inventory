@@ -22,8 +22,8 @@ public:
 public:
 	enum SOUND_CHANNEL
 	{
-		CHANNEL_BGM, 
-
+		CHANNEL_BGM,
+		CHANNEL_DEFAULT,
 
 		CHANNEL_TALK = 25,
 		CHANNEL_CHAOS = 26,
