@@ -132,10 +132,13 @@ HRESULT CInventory::Render()
 	{
 		for(int i = 0; i < ItemSlotLength; ++i)
 		{
+			int ItemSize = m_ItemSize[m_Items[i]];
+			if (ItemSize == 0)
+				continue;
 			CItemIcon* Icon = m_ItemIcons[i];
 			
-			wstring Amount = to_wstring(m_ItemSize[m_Items[i]]);
-			m_pGameInstance->Render_Text(TEXT("Font_NeoDun"), Amount.c_str(), XMVectorSet(Icon->Get_fX(), Icon->Get_fY(), 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.7f);
+			wstring Amount = to_wstring(ItemSize);
+			m_pGameInstance->Render_Text(TEXT("Font_NeoDun"), Amount.c_str(), XMVectorSet(Icon->Get_fX(), Icon->Get_fY(), 0.f, 1.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.f, XMVectorSet(0.f, 0.f, 0.f, 1.f), 0.5f);
 		}
 		m_bFontRender = false;
 
@@ -152,15 +155,52 @@ void CInventory::Key_Input()
 		m_bActive = false;
 	}
 
-	if (m_pGameInstance->GetButtonDown(KeyType::Q))
+	if (m_pGameInstance->GetButtonDown(KeyType::KEY_1))
 	{
 		Add_Item(ITEM_POTION_1, 1);
 	}
 
-	if (m_pGameInstance->GetButtonDown(KeyType::E))
+	if (m_pGameInstance->GetButtonDown(KeyType::KEY_2))
 	{
 		Add_Item(ITEM_POTION_2, 1);
 	}
+
+	if (m_pGameInstance->GetButtonDown(KeyType::KEY_3))
+	{
+		Add_Item(ITEM_REDSTONEPOCKET, 1);
+	}
+
+	if (m_pGameInstance->GetButtonDown(KeyType::KEY_4))
+	{
+		Add_Item(ITEM_BLUESTONEPOCKET, 1);
+	}
+
+	if (m_pGameInstance->GetButtonDown(KeyType::KEY_5))
+	{
+		Add_Item(ITEM_REDSTONE, 1);
+	}
+
+	if (m_pGameInstance->GetButtonDown(KeyType::KEY_6))
+	{
+		Add_Item(ITEM_BLUESTONE, 1);
+	}
+
+	if (m_pGameInstance->GetButtonDown(KeyType::KEY_7))
+	{
+		Add_Item(ITEM_GRENADE_WIND, 1);
+	}
+
+	if (m_pGameInstance->GetButtonDown(KeyType::KEY_8))
+	{
+		Add_Item(ITEM_GRENADE_DARK, 1);
+	}
+
+	if (m_pGameInstance->GetButtonDown(KeyType::KEY_9))
+	{
+		Add_Item(ITEM_POTION_AWAKEN, 1);
+	}
+
+	
 }
 
 void CInventory::Mouse_Input()
@@ -203,9 +243,10 @@ void CInventory::Mouse_Input()
 	if (SelectedSlot == -1)
 		return;
 
-	if (m_pGameInstance->GetButton(KeyType::HMouse))
+	if (m_pGameInstance->GetButtonDown(KeyType::HMouse))
 	{
 		m_SortLock[SelectedSlot] = !m_SortLock[SelectedSlot];
+		m_ItemSlots[SelectedSlot]->Sortlock();
 	}
 	if (m_pGameInstance->GetButtonDown(KeyType::RightMouse))
 	{
@@ -255,6 +296,7 @@ void CInventory::Swap_Item(int PickIndex, int DropIndex)
 	swap(m_SortLock[PickIndex], m_SortLock[DropIndex]);
 	Syncro_ItemSlot(PickIndex);
 	Syncro_ItemSlot(DropIndex);
+	m_ItemSlots[PickIndex]->SwapData(m_ItemSlots[DropIndex]);
 }
 
 bool CInventory::Add_Item(ITEMID Item, int Amount)
@@ -341,6 +383,7 @@ void CInventory::Set_ItemIcon(ITEMID Item, int Index, int Amount)
 void CInventory::Syncro_ItemSlot(int SlotIndex)
 {
 	m_ItemIcons[SlotIndex]->Set_ItemIcon(m_Items[SlotIndex]);
+	
 }
 
 HRESULT CInventory::Ready_Components()

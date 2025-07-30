@@ -37,7 +37,8 @@ public:
 
 public:
 	bool MouseCheck(POINT MousePos);
-
+	void SwapData(CItemSlot* pSlot);
+	void Sortlock() { m_iRenderTexture = m_iRenderTexture == 2 ? 0 : 2; }
 public:
 	class CShader* m_pShaderCom = { nullptr };
 	class CTexture* m_pTextureCom = { nullptr };

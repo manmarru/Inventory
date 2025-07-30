@@ -84,13 +84,28 @@ HRESULT CItemSlot::Render()
 
 bool CItemSlot::MouseCheck(POINT MousePos)
 {
-	if (false == MouseOverButton(MousePos))
+	if (m_iRenderTexture != 2)
 	{
-		m_iRenderTexture = 0;
-		return false;
+		if (false == MouseOverButton(MousePos))
+		{
+			m_iRenderTexture = 0;
+			return false;
+		}
+		m_iRenderTexture = 1;
 	}
-	m_iRenderTexture = 1;
+	else
+	{
+		if (false == MouseOverButton(MousePos))
+		{
+			return false;
+		}
+	}
 	return true;
+}
+
+void CItemSlot::SwapData(CItemSlot* pSlot)
+{
+	swap(m_iRenderTexture, pSlot->m_iRenderTexture);
 }
 
 HRESULT CItemSlot::Ready_Components()

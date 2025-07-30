@@ -46,20 +46,20 @@ void CLURD_Test::Priority_Update(_float fTimeDelta)
 
 void CLURD_Test::Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->GetButton(KeyType::KEY_1))
+	if (m_pGameInstance->GetButton(KeyType::Z))
 	{
 		m_fSizeX += 1;
 	}
-	else 	if (m_pGameInstance->GetButton(KeyType::KEY_2))
+	else 	if (m_pGameInstance->GetButton(KeyType::X))
 	{
 		m_fSizeX -= 1;
 	}
 
-	if (m_pGameInstance->GetButton(KeyType::KEY_3))
+	if (m_pGameInstance->GetButton(KeyType::C))
 	{
 		m_fSizeY += 1;
 	}
-	else if (m_pGameInstance->GetButton(KeyType::KEY_4))
+	else if (m_pGameInstance->GetButton(KeyType::V))
 	{
 		m_fSizeY -= 1;
 	}

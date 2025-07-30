@@ -161,12 +161,12 @@ HRESULT CLoader::Ready_Resources_For_Inventory()
 
 	/* For. Prototype_Component_Texture_ItemSlot */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TextureTag_ItemSlot,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/ItemSlot_%d.png"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/ItemSlot_%d.png"), 3))))
 		return E_FAIL;
 
 	/* For. Prototype_Component_Texture_ItemIcon */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TextureTag_ItemIcon,
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/ItemIcon_%d.png"), 3))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Inventory/ItemIcon_%d.png"), 10))))
 		return E_FAIL;
 
 	/* For. Prototype_Component_Texture_ButtonUI_Sort */
