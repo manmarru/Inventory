@@ -29,6 +29,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_NeoDun"), TEXT("../Bin/Resources/Fonts/NeoDun.spritefont"))))
 		return E_FAIL;
 
+	m_pGameInstance->PlayBGM(TEXT("BGM.wav"), 1.f, true);
+
 	return S_OK;
 }
 

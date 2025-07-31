@@ -55,6 +55,14 @@ HRESULT CInventory::Initialize(void* pArg)
 
 	Read_ItemData();
 
+	Add_Item(ITEM_POTION_1, 40);
+	Add_Item(ITEM_POTION_2, 60);
+	Add_Item(ITEM_REDSTONEPOCKET, 10);
+	Add_Item(ITEM_BLUESTONEPOCKET, 10);
+	Add_Item(ITEM_POTION_AWAKEN, 1);
+	Add_Item(ITEM_GRENADE_WIND, 50);
+	Add_Item(ITEM_GRENADE_DARK, 50);
+
 	return S_OK;
 }
 
@@ -354,12 +362,11 @@ void CInventory::Use_Item(int SlotIndex)
 		m_pGameInstance->PlayDefault(TEXT("Incorrect.wav"), 1, 1.f, false);
 		break;
 	case ITEM_BOX:
-		Add_Item((ITEMID)ItemData.second, 10);
+		Add_Item((ITEMID)ItemData.second, 1);
 		Replace_Item(SlotIndex, 1);
 		m_pGameInstance->PlayDefault(TEXT("BoxOpen.wav"), 1, 1.f, false);
 		break;
 	case ITEM_POTION:
-		//Replace_Item(SlotIndex, 1);
 		m_pGameInstance->PlayDefault(TEXT("Incorrect.wav"), 1, 1.f, false);
 		break;
 	case ITEMTYPE_END:
@@ -394,7 +401,7 @@ bool CInventory::Add_Item(ITEMID Item, int Amount)
 		{
 			Items[i] = Item;
 			(*m_ItemIcons)[i]->Set_ItemIcon(Item);
-			++m_ItemSize[Item];
+			m_ItemSize[Item] += Amount;
 			return true;
 		}
 	}
