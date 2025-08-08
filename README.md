@@ -24,10 +24,10 @@ zxcv: LURD 사이즈 조절
 IJKL: LURD 이동  
 
 ## 주요 코드
-- ButtonUI
-- Inventory
-- ItemIcon
-- ItemSlot
+- [ButtonUI](https://github.com/manmarru/Inventory/blob/main/Client/Private/ButtonUI.cpp)  
+- [Inventory](Client/Private/Inventory.cpp)  
+- [ItemIcon](Client/Private/ItemIcon.cpp)  
+- [ItemSlot](Client/Private/ItemSlot.cpp)  
 
 ## 코드소개
 <img width="801" height="616" alt="image" src="https://github.com/user-attachments/assets/df9e3722-6ff9-4b62-b46e-b601fe8d0378" />  
