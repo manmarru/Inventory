@@ -1,7 +1,7 @@
 # Inventory
 [시연영상](https://youtu.be/K9rdjz1qtuw)
 
-로스트아크의 인벤토리를 모작했습니다.  
+샘플 코드용 인벤토리입니다.
 ## 기술 스택
 - C++
 - DirextX11
