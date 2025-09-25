@@ -26,7 +26,6 @@ zxcv: LURD 사이즈 조절
 IJKL: LURD 이동  
 
 ## 주요 코드
-- [ButtonUI](https://github.com/manmarru/Inventory/blob/main/Client/Private/ButtonUI.cpp)  
 - [Inventory](Client/Private/Inventory.cpp)  
 - [ItemIcon](Client/Private/ItemIcon.cpp)  
 - [ItemSlot](Client/Private/ItemSlot.cpp)  
